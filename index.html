@@ -4,735 +4,1335 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Проверочная работа — Статистика</title>
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --card: #1c2128;
-    --border: #30363d;
-    --accent: #58a6ff;
-    --accent2: #3fb950;
-    --warn: #f0883e;
-    --danger: #f85149;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --radius: 12px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'PT Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  /* ---- TOP BAR ---- */
-  #topbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 16px; gap: 12px;
-  }
-  #student-name-display { font-family:'Russo One',sans-serif; font-size:.9rem; color:var(--accent); }
-  #timer {
-    font-family:'Russo One',sans-serif; font-size:1.4rem;
-    background: var(--card); border:2px solid var(--border);
-    padding: 4px 14px; border-radius:8px; letter-spacing:2px;
-    transition: color .3s, border-color .3s;
-  }
-  #timer.warn { color:var(--warn); border-color:var(--warn); }
-  #timer.danger { color:var(--danger); border-color:var(--danger); animation: pulse 1s infinite; }
-  #warn-badge {
-    font-size:.75rem; background:var(--danger);
-    color:#fff; padding:3px 10px; border-radius:20px;
-    display:none;
-  }
-  #warn-badge.visible { display:block; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1f2937;
+  --border: #30363d;
+  --accent: #00d4aa;
+  --accent2: #ff6b6b;
+  --accent3: #ffd93d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
 
-  /* ---- SCREENS ---- */
-  .screen { display:none; min-height:100vh; padding: 80px 16px 40px; }
-  .screen.active { display:block; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-  /* ---- LOGIN ---- */
-  #screen-login {
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:20px;
-  }
-  #screen-login.active { display:flex; }
-  .login-box {
-    background: var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding: 36px 28px;
-    width:100%; max-width:420px;
-    text-align:center;
-  }
-  .login-box h1 { font-family:'Russo One',sans-serif; font-size:1.6rem; margin-bottom:6px; }
-  .login-box p { color:var(--muted); font-size:.9rem; margin-bottom:28px; }
-  .input-group { margin-bottom:16px; text-align:left; }
-  .input-group label { display:block; font-size:.8rem; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
-  .input-group input {
-    width:100%; padding:12px 14px;
-    background:var(--card); border:1px solid var(--border);
-    border-radius:8px; color:var(--text); font-size:1rem; font-family:inherit;
-    outline:none; transition:border-color .2s;
-  }
-  .input-group input:focus { border-color:var(--accent); }
-  .btn {
-    display:inline-flex; align-items:center; justify-content:center;
-    padding:12px 28px; border-radius:8px; border:none; cursor:pointer;
-    font-family:'PT Sans',sans-serif; font-size:1rem; font-weight:700;
-    transition:opacity .2s, transform .1s;
-  }
-  .btn:active { transform:scale(.97); }
-  .btn-primary { background:var(--accent); color:#0d1117; width:100%; margin-top:8px; }
-  .btn-primary:hover { opacity:.88; }
-  .rules { margin-top:20px; background:var(--card); border-radius:8px; padding:14px 16px; text-align:left; font-size:.82rem; color:var(--muted); border:1px solid var(--border); }
-  .rules li { margin-left:16px; margin-bottom:4px; }
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  /* ---- TASKS ---- */
-  h2 { font-family:'Russo One',sans-serif; font-size:1.3rem; margin-bottom:4px; }
-  .task-intro { color:var(--muted); font-size:.88rem; margin-bottom:18px; }
-  .card {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius); padding:20px; margin-bottom:20px;
-  }
-  .score-tag {
-    display:inline-block; font-size:.72rem; background:var(--accent);
-    color:#0d1117; border-radius:20px; padding:2px 10px; margin-left:8px;
-    font-weight:700; vertical-align:middle;
-  }
-  .score-tag.green { background:var(--accent2); }
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 20% 20%, rgba(0,212,170,0.04) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 80%, rgba(255,107,107,0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
 
-  /* ---- CHART (task1) ---- */
-  #chart1-container { position:relative; width:100%; height:220px; margin-bottom:16px; }
-  canvas { border-radius:8px; }
+/* ===== HEADER ===== */
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
 
-  /* data table */
-  .data-table { width:100%; border-collapse:collapse; font-size:.85rem; margin-bottom:16px; }
-  .data-table th, .data-table td { border:1px solid var(--border); padding:6px 10px; text-align:center; }
-  .data-table th { background:var(--card); color:var(--muted); font-weight:700; }
-  .data-table td { background:var(--surface); }
+.header-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  /* answer inputs */
-  .answer-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
-  .answer-row label { font-size:.9rem; min-width:110px; }
-  .answer-row input[type=number] {
-    width:110px; padding:8px 12px;
-    background:var(--card); border:1px solid var(--border);
-    border-radius:8px; color:var(--text); font-size:1rem; font-family:inherit;
-    outline:none;
-  }
-  .answer-row input[type=number]:focus { border-color:var(--accent); }
+.timer-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+}
 
-  /* ---- TASK 2 sliders ---- */
-  .slider-group { margin-bottom:16px; }
-  .slider-label { display:flex; justify-content:space-between; font-size:.83rem; color:var(--muted); margin-bottom:4px; }
-  .slider-label span { color:var(--text); font-weight:700; }
-  input[type=range] {
-    width:100%; -webkit-appearance:none; height:6px;
-    background:var(--border); border-radius:3px; outline:none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance:none; width:20px; height:20px;
-    border-radius:50%; background:var(--accent); cursor:pointer;
-    box-shadow:0 0 0 3px rgba(88,166,255,.25);
-  }
-  input[type=range].green::-webkit-slider-thumb { background:var(--accent2); box-shadow:0 0 0 3px rgba(63,185,80,.25); }
-  #hist2-container { position:relative; width:100%; height:220px; margin:16px 0; }
+.timer-icon { font-size: 16px; }
 
-  /* data list task2 */
-  .data-list { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
-  .data-list span {
-    background:var(--card); border:1px solid var(--border);
-    border-radius:6px; padding:3px 10px; font-size:.8rem; color:var(--muted);
-  }
+#timer {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent3);
+  letter-spacing: 2px;
+  min-width: 50px;
+}
 
-  /* ---- RESULT ---- */
-  #screen-result { text-align:center; }
-  #screen-result.active { display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  .result-box {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius); padding:36px 28px; max-width:440px; width:100%;
-  }
-  .grade-circle {
-    width:100px; height:100px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Russo One',sans-serif; font-size:3rem;
-    margin:0 auto 20px; border:4px solid;
-  }
-  .grade-5 { color:var(--accent2); border-color:var(--accent2); }
-  .grade-4 { color:var(--accent); border-color:var(--accent); }
-  .grade-3 { color:var(--warn); border-color:var(--warn); }
-  .grade-2 { color:var(--danger); border-color:var(--danger); }
-  .result-breakdown { font-size:.88rem; color:var(--muted); margin-top:16px; text-align:left; border-top:1px solid var(--border); padding-top:14px; }
-  .result-breakdown div { display:flex; justify-content:space-between; margin-bottom:6px; }
-  .result-breakdown .val { color:var(--text); font-weight:700; }
-  .annul-box { color:var(--danger); font-size:1.1rem; margin-bottom:16px; }
+#timer.warning { color: var(--accent2); animation: pulse 1s infinite; }
 
-  /* ---- BANNER ---- */
-  #banner {
-    display:none; position:fixed; inset:0; z-index:999;
-    background:rgba(248,81,73,.96); color:#fff;
-    flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:30px;
-  }
-  #banner.show { display:flex; }
-  #banner h2 { font-family:'Russo One',sans-serif; font-size:2rem; margin-bottom:10px; }
-  #banner p { font-size:1rem; max-width:340px; margin-bottom:20px; }
-  #banner button { background:#fff; color:var(--danger); font-weight:700; padding:12px 28px; border:none; border-radius:8px; cursor:pointer; font-size:1rem; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-  /* ---- SUBMIT ---- */
-  #submit-btn { width:100%; margin-top:10px; font-size:1.1rem; padding:16px; }
-  .nav-btns { display:flex; gap:10px; margin-top:16px; }
-  .btn-outline { background:transparent; border:2px solid var(--accent); color:var(--accent); }
-  .btn-outline:hover { background:var(--accent); color:#0d1117; }
+.remarks-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
 
-  /* Task tabs */
-  .task-tabs { display:flex; gap:8px; margin-bottom:20px; }
-  .tab-btn {
-    flex:1; padding:10px; border:2px solid var(--border);
-    border-radius:8px; background:var(--card); color:var(--muted);
-    cursor:pointer; font-family:'PT Sans',sans-serif; font-weight:700;
-    transition:all .2s;
-  }
-  .tab-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(88,166,255,.1); }
-  .tab-content { display:none; }
-  .tab-content.active { display:block; }
+.remarks-count {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent3);
+}
 
-  #annul-screen {
-    display:none; position:fixed; inset:0; z-index:998;
-    background:var(--bg); flex-direction:column; align-items:center;
-    justify-content:center; text-align:center; padding:30px;
-  }
-  #annul-screen.show { display:flex; }
-  #annul-screen h2 { font-family:'Russo One',sans-serif; color:var(--danger); font-size:2rem; margin-bottom:12px; }
+.remarks-count.danger { color: var(--accent2); }
 
-  @media(max-width:400px) {
-    #timer { font-size:1.1rem; padding:3px 10px; }
-    .answer-row input[type=number] { width:90px; }
-  }
+/* ===== MAIN ===== */
+.main {
+  padding: 80px 16px 100px;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== SCREENS ===== */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ===== LOGIN SCREEN ===== */
+.login-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  text-align: center;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: var(--shadow);
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), #00a8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.form-group { margin-bottom: 20px; text-align: left; }
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.form-group input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 16px;
+  font-family: 'Golos Text', sans-serif;
+  color: var(--text);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-group input:focus { border-color: var(--accent); }
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #00a8ff);
+  color: #000;
+}
+
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,170,0.3); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-submit {
+  background: linear-gradient(135deg, var(--accent3), #ff9f43);
+  color: #000;
+  margin-top: 24px;
+}
+
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,217,61,0.3); }
+
+.info-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.info-pill {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.info-pill strong {
+  display: block;
+  font-size: 18px;
+  color: var(--accent);
+  font-family: 'Unbounded', sans-serif;
+}
+
+/* ===== TASK CARDS ===== */
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.task-num {
+  background: linear-gradient(135deg, var(--accent), #00a8ff);
+  color: #000;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.task-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.task-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ===== CHART ===== */
+.chart-container {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 12px 12px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.chart-svg { width: 100%; overflow: visible; }
+
+.chart-bar { cursor: default; transition: opacity 0.2s; }
+.chart-bar:hover { opacity: 0.85; }
+
+.chart-label { font-size: 11px; fill: var(--text-muted); font-family: 'Golos Text', sans-serif; }
+.chart-value { font-size: 10px; fill: var(--accent); font-family: 'Golos Text', sans-serif; font-weight: 600; }
+.axis-line { stroke: var(--border); stroke-width: 1; }
+
+/* ===== ANSWERS ===== */
+.answer-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.answer-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.answer-field input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: 'Golos Text', sans-serif;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.answer-field input:focus { border-color: var(--accent); }
+
+/* ===== SLIDERS FOR TASK 2 ===== */
+.slider-section { margin-bottom: 24px; }
+
+.slider-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.data-display {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.data-display span { color: var(--text); font-weight: 500; }
+
+.histogram-builder {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.histo-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.histo-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 72px;
+  flex-shrink: 0;
+}
+
+.histo-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+
+.histo-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.2);
+}
+
+.histo-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+}
+
+.histo-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 28px;
+  text-align: right;
+}
+
+.histo-preview {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-sliders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-slider-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-slider-val {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.stat-slider-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+
+.stat-slider-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent3);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(255,217,61,0.2);
+}
+
+.stat-slider-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent3);
+  cursor: pointer;
+  border: none;
+}
+
+/* ===== SUBMIT AREA ===== */
+.submit-area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.submit-area p {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* ===== BANNER (remark) ===== */
+.banner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.banner-overlay.hidden { display: none; }
+
+.banner-card {
+  background: var(--surface);
+  border: 2px solid var(--accent2);
+  border-radius: 20px;
+  padding: 32px 28px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  animation: bannerIn 0.3s ease;
+  box-shadow: 0 0 60px rgba(255,107,107,0.3);
+}
+
+@keyframes bannerIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.banner-icon { font-size: 48px; margin-bottom: 12px; }
+.banner-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent2);
+  margin-bottom: 10px;
+}
+
+.banner-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.banner-close {
+  background: var(--accent2);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.banner-close:hover { opacity: 0.85; }
+
+.permanent-warning {
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--accent2);
+  margin-top: 12px;
+  display: none;
+}
+
+.permanent-warning.show { display: block; }
+
+/* ===== RESULTS ===== */
+.result-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+  text-align: center;
+}
+
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow);
+}
+
+.grade-display {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 80px;
+  font-weight: 800;
+  margin: 16px 0;
+  line-height: 1;
+}
+
+.grade-5 { background: linear-gradient(135deg, #00d4aa, #00a8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.grade-4 { background: linear-gradient(135deg, #00d4aa, #ffd93d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.grade-3 { background: linear-gradient(135deg, #ffd93d, #ff9f43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.grade-2 { background: linear-gradient(135deg, #ff6b6b, #ee5a24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.result-score {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.result-details {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.result-row:last-child { border-bottom: none; }
+
+.result-points {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.annulled-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+  text-align: center;
+}
+
+.annulled-card {
+  background: var(--surface);
+  border: 2px solid var(--accent2);
+  border-radius: 20px;
+  padding: 40px 32px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 0 60px rgba(255,107,107,0.2);
+}
+
+.status-sent {
+  font-size: 13px;
+  color: var(--accent);
+  margin-top: 12px;
+}
+
+.status-sent.error { color: var(--accent2); }
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+  .answer-group { grid-template-columns: 1fr; }
+  .stat-sliders { grid-template-columns: 1fr; }
+  .info-row { flex-direction: column; }
+  .login-card { padding: 28px 20px; }
+  .header-title { font-size: 11px; }
+  .grade-display { font-size: 64px; }
+}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div id="topbar" style="display:none">
-  <div id="student-name-display"></div>
-  <div id="timer">20:00</div>
-  <div id="warn-badge">⚠ <span id="warn-count">0</span> замеч.</div>
-</div>
-
-<!-- BANNER: покинул страницу -->
-<div id="banner">
-  <h2>⚠ Замечание!</h2>
-  <p id="banner-text">Вы покинули страницу проверочной работы. Это замечание будет учтено.</p>
-  <button onclick="dismissBanner()">Вернуться к работе</button>
-</div>
-
-<!-- АННУЛИРОВАНИЕ -->
-<div id="annul-screen">
-  <h2>Работа аннулирована</h2>
-  <p style="color:var(--muted);max-width:340px">Вы получили 3 и более замечаний. Работа аннулирована и отправлена учителю с нулевым баллом.</p>
-</div>
-
-<!-- ЭКРАН: Ввод имени -->
-<div id="screen-login" class="screen active">
-  <div class="login-box">
-    <h1>📊 Проверочная работа</h1>
-    <p>Статистика и диаграммы · 20 минут</p>
-    <div class="input-group">
-      <label>Фамилия</label>
-      <input type="text" id="inp-last" placeholder="Иванов" autocomplete="off">
-    </div>
-    <div class="input-group">
-      <label>Имя</label>
-      <input type="text" id="inp-first" placeholder="Иван" autocomplete="off">
-    </div>
-    <button class="btn btn-primary" onclick="startTest()">Начать работу →</button>
-    <div class="rules">
-      <strong>Правила:</strong>
-      <ul>
-        <li>Время выполнения — 20 минут</li>
-        <li>Не покидайте страницу (замечание)</li>
-        <li>2 замечания — минус 1 балл</li>
-        <li>3+ замечания — аннулирование</li>
-        <li>Копирование и скриншоты запрещены</li>
-      </ul>
-    </div>
+<!-- HEADER -->
+<header class="header" id="mainHeader" style="display:none">
+  <div class="header-title" id="headerName">Проверочная работа</div>
+  <div class="timer-wrap">
+    <span class="timer-icon">⏱</span>
+    <span id="timer">20:00</span>
   </div>
-</div>
-
-<!-- ЭКРАН: Задания -->
-<div id="screen-tasks" class="screen">
-  <div class="task-tabs">
-    <button class="tab-btn active" onclick="showTab(1)">Задание 1</button>
-    <button class="tab-btn" onclick="showTab(2)">Задание 2</button>
+  <div class="remarks-badge">
+    <span>⚠️</span>
+    <span id="remarksCount" class="remarks-count">0</span>
   </div>
+</header>
 
-  <!-- ЗАДАНИЕ 1 -->
-  <div id="tab1" class="tab-content active">
-    <h2>Задание 1 <span class="score-tag">до 3 баллов</span></h2>
-    <p class="task-intro">Проанализируйте столбчатую диаграмму и ответьте на вопросы.</p>
+<!-- SCREENS -->
+<div class="main">
 
-    <div class="card">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px;">Данные наблюдений:</p>
-      <table class="data-table" id="table1"></table>
-      <div id="chart1-container">
-        <canvas id="chart1"></canvas>
+  <!-- LOGIN -->
+  <div class="screen active" id="screen-login">
+    <div class="login-screen">
+      <div class="login-card">
+        <div class="logo">СТА<span style="color:#ff6b6b">ТИС</span>ТИКА</div>
+        <div class="subtitle">Проверочная работа по основам статистики</div>
+        <div class="info-row">
+          <div class="info-pill"><strong>20</strong> минут</div>
+          <div class="info-pill"><strong>6</strong> баллов</div>
+          <div class="info-pill"><strong>2</strong> задания</div>
+        </div>
+        <div style="margin-top:24px;text-align:left">
+          <div class="form-group">
+            <label>Фамилия</label>
+            <input type="text" id="inputLastName" placeholder="Иванов" autocomplete="family-name">
+          </div>
+          <div class="form-group">
+            <label>Имя</label>
+            <input type="text" id="inputFirstName" placeholder="Иван" autocomplete="given-name">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="startQuiz()">Начать работу →</button>
       </div>
-    </div>
-
-    <div class="card">
-      <p style="font-size:.88rem;font-weight:700;margin-bottom:14px;">Ваши ответы:</p>
-      <div class="answer-row">
-        <label>Среднее:</label>
-        <input type="number" id="ans1-mean" step="0.01" placeholder="0.00">
-      </div>
-      <div class="answer-row">
-        <label>Медиана:</label>
-        <input type="number" id="ans1-median" step="0.01" placeholder="0.00">
-      </div>
-    </div>
-
-    <div class="nav-btns">
-      <button class="btn btn-outline" style="flex:1" onclick="showTab(2)">Задание 2 →</button>
     </div>
   </div>
 
-  <!-- ЗАДАНИЕ 2 -->
-  <div id="tab2" class="tab-content">
-    <h2>Задание 2 <span class="score-tag green">до 3 баллов</span></h2>
-    <p class="task-intro">Используя ползунки, постройте гистограмму распределения данных (6 столбиков) и укажите среднее и медиану.</p>
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
 
-    <div class="card">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Набор данных (30 значений):</p>
-      <div class="data-list" id="data2-list"></div>
+    <div class="permanent-warning" id="permWarning">
+      ⚠️ Внимание: Зафиксированы замечания. Ещё одно — работа будет аннулирована.
     </div>
 
-    <div class="card">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px;">Высота каждого столбика (частота):</p>
-      <div id="sliders-hist"></div>
-      <div id="hist2-container">
-        <canvas id="chart2"></canvas>
+    <!-- TASK 1 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num">Задание 1</div>
+        <div class="task-title">Анализ диаграммы</div>
+      </div>
+      <div class="task-desc" id="task1-desc"></div>
+
+      <div class="chart-container">
+        <svg class="chart-svg" id="chart1" viewBox="0 0 340 180"></svg>
+      </div>
+
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">
+        Проанализируйте диаграмму и введите значения:
+      </div>
+      <div class="answer-group">
+        <div class="answer-field">
+          <label>Среднее (x̄)</label>
+          <input type="number" step="0.01" id="ans1mean" placeholder="0.00">
+        </div>
+        <div class="answer-field">
+          <label>Медиана (Me)</label>
+          <input type="number" step="0.01" id="ans1median" placeholder="0.00">
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <p style="font-size:.88rem;font-weight:700;margin-bottom:14px;">Среднее и медиана:</p>
-      <div class="slider-group">
-        <div class="slider-label">Среднее: <span id="val-mean2">0</span></div>
-        <input type="range" id="sl-mean2" min="0" max="100" value="0" oninput="document.getElementById('val-mean2').textContent=parseFloat(this.value).toFixed(1)">
+    <!-- TASK 2 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num">Задание 2</div>
+        <div class="task-title">Построение гистограммы</div>
       </div>
-      <div class="slider-group">
-        <div class="slider-label">Медиана: <span id="val-median2">0</span></div>
-        <input type="range" class="green" id="sl-median2" min="0" max="100" value="0" oninput="document.getElementById('val-median2').textContent=parseFloat(this.value).toFixed(1)">
+      <div class="task-desc" id="task2-desc"></div>
+
+      <div class="data-display" id="task2-data"></div>
+
+      <div class="slider-section">
+        <div class="slider-section-title">Постройте гистограмму (высота каждого столбика)</div>
+        <div class="histogram-builder" id="histoBuilder"></div>
+
+        <div class="histo-preview">
+          <svg class="chart-svg" id="chart2" viewBox="0 0 340 160"></svg>
+        </div>
+      </div>
+
+      <div class="slider-section">
+        <div class="slider-section-title">Введите статистические характеристики</div>
+        <div class="stat-sliders">
+          <div class="stat-slider-group">
+            <label>Среднее (x̄)</label>
+            <div class="stat-slider-val" id="ans2meanVal">—</div>
+            <input type="range" class="stat-slider-range" id="ans2mean" min="0" max="100" step="0.5" oninput="updateStatSliders()">
+          </div>
+          <div class="stat-slider-group">
+            <label>Медиана (Me)</label>
+            <div class="stat-slider-val" id="ans2medVal">—</div>
+            <input type="range" class="stat-slider-range" id="ans2med" min="0" max="100" step="0.5" oninput="updateStatSliders()">
+          </div>
+        </div>
       </div>
     </div>
 
-    <button id="submit-btn" class="btn btn-primary" onclick="submitWork()">✔ Завершить работу</button>
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <p>Убедитесь, что все поля заполнены, затем сдайте работу.</p>
+      <button class="btn btn-submit" onclick="submitQuiz()">Сдать работу ✓</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-result">
+    <div class="result-screen">
+      <div class="result-card">
+        <div style="font-size:14px;color:var(--text-muted);">Работа завершена</div>
+        <div class="grade-display" id="resultGrade"></div>
+        <div class="result-score" id="resultScore"></div>
+        <div class="result-details" id="resultDetails"></div>
+        <div class="status-sent" id="statusSent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNULLED -->
+  <div class="screen" id="screen-annulled">
+    <div class="annulled-screen">
+      <div class="annulled-card">
+        <div style="font-size:56px;">🚫</div>
+        <div class="banner-title" style="font-size:22px;margin-top:12px;">Работа аннулирована</div>
+        <p style="color:var(--text-muted);margin-top:12px;font-size:14px;line-height:1.6">
+          Зафиксировано 3 и более нарушений (уход со страницы / попытка снимка экрана).<br><br>
+          Ваша работа аннулирована. Обратитесь к учителю.
+        </p>
+        <div class="status-sent" id="statusAnnulled" style="margin-top:16px"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BANNER -->
+<div class="banner-overlay hidden" id="bannerOverlay">
+  <div class="banner-card">
+    <div class="banner-icon" id="bannerIcon">⚠️</div>
+    <div class="banner-title" id="bannerTitle">Замечание!</div>
+    <div class="banner-text" id="bannerText"></div>
+    <button class="banner-close" onclick="closeBanner()">Понял, продолжаю работу</button>
   </div>
 </div>
 
-<!-- ЭКРАН: Результат -->
-<div id="screen-result" class="screen">
-  <div class="result-box">
-    <div id="annul-result" class="annul-box" style="display:none">Работа аннулирована</div>
-    <div id="grade-circle" class="grade-circle grade-5">5</div>
-    <h2 id="result-label" style="font-size:1.4rem;margin-bottom:6px;"></h2>
-    <p id="result-name" style="color:var(--muted);font-size:.9rem;"></p>
-    <div class="result-breakdown" id="result-breakdown"></div>
-  </div>
-</div>
-
-<!-- Chart.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ===== STATE =====
+// ========================
+// CONFIG
+// ========================
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJEzcdUez6dvph52SqmrMiqH-c2Oe-R8iGRNpk3XtYPSplJ62dxFcnyt9bx-LTTR4DXQ/exec'; // Replace with your Apps Script URL
+
 let studentName = '';
-let warnings = 0;
-let annulled = false;
 let timerInterval = null;
-let timeLeft = 20 * 60;
-let testStarted = false;
-let chart1Inst = null, chart2Inst = null;
+let secondsLeft = 20 * 60;
+let remarks = 0;
+let quizStarted = false;
+let quizFinished = false;
 
-// task1 data
+// Task 1 data
 let t1x = [], t1y = [], t1mean = 0, t1median = 0;
-// task2 data
-let t2data = [], t2bins = [], t2mean = 0, t2median = 0;
-const BIN_COUNT = 6;
 
-// ===== SCREENSHOT / COPY PREVENTION =====
-document.addEventListener('copy', e => e.preventDefault());
-document.addEventListener('cut', e => e.preventDefault());
-document.addEventListener('contextmenu', e => { if(testStarted) e.preventDefault(); });
-document.addEventListener('keydown', e => {
-  if(!testStarted) return;
-  // PrintScreen
-  if(e.key === 'PrintScreen') {
-    e.preventDefault();
-    document.body.style.filter = 'blur(12px)';
-    setTimeout(() => document.body.style.filter = '', 1500);
-    triggerWarning('Попытка сделать скриншот зафиксирована.');
+// Task 2 data
+let t2data = [], t2bins = [], t2min = 0, t2max = 0;
+let t2histoCounts = [0,0,0,0,0,0]; // user answers
+let t2mean = 0, t2median = 0;
+let t2sliderMin = 0, t2sliderMax = 100;
+
+// ========================
+// DATA GENERATION
+// ========================
+function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+
+function generateTask1() {
+  // 6 distinct x values, y = frequencies
+  const xs = [];
+  while (xs.length < 6) {
+    const v = randInt(1, 20);
+    if (!xs.includes(v)) xs.push(v);
   }
-  // Ctrl+P, Ctrl+S, F12
-  if((e.ctrlKey && ['p','s','u'].includes(e.key.toLowerCase())) || e.key==='F12') {
-    e.preventDefault();
-  }
-});
+  xs.sort((a,b) => a-b);
+  const ys = xs.map(() => randInt(1, 10));
 
-// ===== VISIBILITY =====
-document.addEventListener('visibilitychange', () => {
-  if(!testStarted || annulled) return;
-  if(document.hidden) triggerWarning('Вы покинули страницу проверочной работы.');
-});
-window.addEventListener('blur', () => {
-  if(!testStarted || annulled) return;
-  triggerWarning('Вы переключились на другое окно.');
-});
+  // expand data for stats
+  let expanded = [];
+  xs.forEach((x, i) => { for (let j = 0; j < ys[i]; j++) expanded.push(x); });
+  expanded.sort((a,b)=>a-b);
+  const mean = expanded.reduce((s,v)=>s+v,0) / expanded.length;
+  const n = expanded.length;
+  let median;
+  if (n % 2 === 0) median = (expanded[n/2-1] + expanded[n/2]) / 2;
+  else median = expanded[Math.floor(n/2)];
 
-function triggerWarning(msg) {
-  if(annulled) return;
-  warnings++;
-  document.getElementById('warn-count').textContent = warnings;
-  document.getElementById('warn-badge').classList.add('visible');
+  t1x = xs; t1y = ys;
+  t1mean = Math.round(mean * 100) / 100;
+  t1median = Math.round(median * 100) / 100;
 
-  if(warnings >= 3) {
-    annulled = true;
-    document.getElementById('banner').classList.remove('show');
-    document.getElementById('annul-screen').classList.add('show');
-    clearInterval(timerInterval);
-    sendResults(true);
-    return;
-  }
-  let bannerText = msg;
-  if(warnings === 2) bannerText += ' Это ваше 2-е замечание — с вас вычтен 1 балл!';
-  document.getElementById('banner-text').textContent = bannerText + ` (замечание ${warnings} из 3)`;
-  document.getElementById('banner').classList.add('show');
+  document.getElementById('task1-desc').textContent =
+    `Дана таблица распределения значений. Ось X — значения признака, ось Y — частоты (количество наблюдений). Изучите диаграмму и вычислите среднее арифметическое и медиану.`;
+
+  drawChart1();
 }
 
-function dismissBanner() {
-  document.getElementById('banner').classList.remove('show');
+function drawChart1() {
+  const svg = document.getElementById('chart1');
+  const W = 340, H = 180, padL = 30, padB = 30, padT = 20, padR = 10;
+  const chartW = W - padL - padR;
+  const chartH = H - padB - padT;
+  const maxY = Math.max(...t1y);
+  const n = t1x.length;
+  const barW = (chartW / n) * 0.65;
+  const gap = (chartW / n) * 0.35;
+
+  let html = '';
+
+  // Axes
+  html += `<line class="axis-line" x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}"/>`;
+  html += `<line class="axis-line" x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}"/>`;
+
+  // Bars
+  const colors = ['#00d4aa','#00a8ff','#ffd93d','#ff6b6b','#c084fc','#fb923c'];
+  t1x.forEach((x, i) => {
+    const bh = (t1y[i] / maxY) * chartH;
+    const bx = padL + i * (chartW / n) + gap/2;
+    const by = padT + chartH - bh;
+    html += `<rect class="chart-bar" x="${bx}" y="${by}" width="${barW}" height="${bh}" fill="${colors[i]}" rx="3"/>`;
+    html += `<text class="chart-label" x="${bx + barW/2}" y="${H-padB+14}" text-anchor="middle">${x}</text>`;
+    html += `<text class="chart-value" x="${bx + barW/2}" y="${by-5}" text-anchor="middle">${t1y[i]}</text>`;
+  });
+
+  // Y labels
+  for (let v = 0; v <= maxY; v += Math.max(1, Math.floor(maxY/4))) {
+    const py = padT + chartH - (v/maxY)*chartH;
+    html += `<text class="chart-label" x="${padL-4}" y="${py+4}" text-anchor="end">${v}</text>`;
+    html += `<line class="axis-line" x1="${padL}" y1="${py}" x2="${padL+4}" y2="${py}" stroke-dasharray="none"/>`;
+  }
+
+  svg.innerHTML = html;
 }
 
-// ===== TIMER =====
+function generateTask2() {
+  // 30 random values
+  const mean0 = randInt(20, 70);
+  const std0 = randInt(5, 15);
+  const vals = [];
+  while (vals.length < 30) {
+    // Box-Muller
+    const u1 = Math.random(), u2 = Math.random();
+    const z = Math.sqrt(-2*Math.log(u1)) * Math.cos(2*Math.PI*u2);
+    const v = Math.round(mean0 + z * std0);
+    if (v >= 1 && v <= 100) vals.push(v);
+  }
+  vals.sort((a,b)=>a-b);
+  t2data = vals;
+
+  // bins of equal width
+  t2min = vals[0]; t2max = vals[vals.length-1];
+  const range = t2max - t2min;
+  const binW = Math.ceil(range / 6);
+  t2bins = [];
+  for (let i = 0; i < 6; i++) {
+    t2bins.push({ lo: t2min + i*binW, hi: t2min + (i+1)*binW - (i<5?1:0) });
+  }
+
+  // correct counts
+  const correctCounts = t2bins.map(b => vals.filter(v => v >= b.lo && v <= b.hi).length);
+
+  // stats
+  const mean = vals.reduce((s,v)=>s+v,0) / vals.length;
+  const n = vals.length;
+  t2mean = Math.round(mean * 10) / 10;
+  t2median = n%2===0 ? (vals[n/2-1]+vals[n/2])/2 : vals[Math.floor(n/2)];
+  t2median = Math.round(t2median * 10) / 10;
+
+  // Update slider ranges for stats
+  const slMin = Math.max(1, Math.floor(vals[0]-5));
+  const slMax = Math.ceil(vals[vals.length-1]+5);
+  t2sliderMin = slMin; t2sliderMax = slMax;
+
+  document.getElementById('ans2mean').min = slMin;
+  document.getElementById('ans2mean').max = slMax;
+  document.getElementById('ans2mean').step = 0.5;
+  document.getElementById('ans2mean').value = Math.round((slMin+slMax)/2);
+
+  document.getElementById('ans2med').min = slMin;
+  document.getElementById('ans2med').max = slMax;
+  document.getElementById('ans2med').step = 0.5;
+  document.getElementById('ans2med').value = Math.round((slMin+slMax)/2);
+
+  updateStatSliders();
+
+  // Task desc
+  document.getElementById('task2-desc').textContent =
+    `Дан набор из 30 числовых значений. Используя ползунки ниже, постройте гистограмму распределения (задайте высоту каждого из 6 столбиков — количество значений в каждом интервале). Затем с помощью ползунков введите среднее и медиану.`;
+
+  document.getElementById('task2-data').innerHTML =
+    `<strong style="color:var(--accent)">Данные:</strong> ${vals.join(', ')}`;
+
+  // Build slider controls
+  buildHistoSliders();
+  t2histoCounts = [0,0,0,0,0,0];
+  drawChart2();
+}
+
+function buildHistoSliders() {
+  const container = document.getElementById('histoBuilder');
+  let html = '';
+  t2bins.forEach((b, i) => {
+    html += `<div class="histo-bar-row">
+      <div class="histo-label">${b.lo}–${b.hi}</div>
+      <input type="range" class="histo-slider" id="hslider${i}" min="0" max="15" step="1" value="0" oninput="updateHistogram()">
+      <div class="histo-val" id="hval${i}">0</div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function updateHistogram() {
+  for (let i = 0; i < 6; i++) {
+    t2histoCounts[i] = parseInt(document.getElementById(`hslider${i}`).value) || 0;
+    document.getElementById(`hval${i}`).textContent = t2histoCounts[i];
+  }
+  drawChart2();
+}
+
+function drawChart2() {
+  const svg = document.getElementById('chart2');
+  const W = 340, H = 160, padL = 28, padB = 28, padT = 16, padR = 8;
+  const chartW = W - padL - padR;
+  const chartH = H - padB - padT;
+  const maxY = Math.max(...t2histoCounts, 1);
+  const n = 6;
+  const barW = (chartW / n) * 0.7;
+  const gap = (chartW / n) * 0.3;
+
+  let html = '';
+  html += `<line class="axis-line" x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}"/>`;
+  html += `<line class="axis-line" x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}"/>`;
+
+  const colors = ['#00d4aa','#00a8ff','#ffd93d','#ff6b6b','#c084fc','#fb923c'];
+  t2bins.forEach((b, i) => {
+    const bh = (t2histoCounts[i] / maxY) * chartH;
+    const bx = padL + i * (chartW / n) + gap/2;
+    const by = padT + chartH - bh;
+    html += `<rect class="chart-bar" x="${bx}" y="${by}" width="${barW}" height="${Math.max(bh,1)}" fill="${colors[i]}" rx="3" opacity="${t2histoCounts[i]>0?1:0.2}"/>`;
+    html += `<text class="chart-label" x="${bx + barW/2}" y="${H-padB+13}" text-anchor="middle" font-size="9">${b.lo}</text>`;
+    if (t2histoCounts[i]>0) html += `<text class="chart-value" x="${bx + barW/2}" y="${by-4}" text-anchor="middle">${t2histoCounts[i]}</text>`;
+  });
+
+  svg.innerHTML = html;
+}
+
+function updateStatSliders() {
+  const meanV = parseFloat(document.getElementById('ans2mean').value);
+  const medV = parseFloat(document.getElementById('ans2med').value);
+  document.getElementById('ans2meanVal').textContent = isNaN(meanV) ? '—' : meanV;
+  document.getElementById('ans2medVal').textContent = isNaN(medV) ? '—' : medV;
+}
+
+// ========================
+// TIMER
+// ========================
 function startTimer() {
   timerInterval = setInterval(() => {
-    timeLeft--;
-    const m = Math.floor(timeLeft/60).toString().padStart(2,'0');
-    const s = (timeLeft%60).toString().padStart(2,'0');
+    secondsLeft--;
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
     const el = document.getElementById('timer');
-    el.textContent = `${m}:${s}`;
-    if(timeLeft <= 120) el.classList.add('warn');
-    if(timeLeft <= 30) { el.classList.remove('warn'); el.classList.add('danger'); }
-    if(timeLeft <= 0) {
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (secondsLeft <= 120) el.classList.add('warning');
+    if (secondsLeft <= 0) {
       clearInterval(timerInterval);
-      submitWork();
+      timeUp();
     }
   }, 1000);
 }
 
-// ===== DATA GENERATION =====
-function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
-
-function generateTask1() {
-  t1x = [];
-  t1y = [];
-  const base = randInt(10,40);
-  for(let i=0;i<6;i++) { t1x.push(base + i*randInt(3,8)); t1y.push(randInt(2,12)); }
-  // mean weighted
-  let sumxy=0, sumy=0;
-  for(let i=0;i<6;i++){sumxy+=t1x[i]*t1y[i]; sumy+=t1y[i];}
-  t1mean = Math.round((sumxy/sumy)*100)/100;
-  // median: expand
-  let expanded = [];
-  for(let i=0;i<6;i++) for(let j=0;j<t1y[i];j++) expanded.push(t1x[i]);
-  expanded.sort((a,b)=>a-b);
-  const mid = Math.floor(expanded.length/2);
-  t1median = expanded.length%2===0 ? Math.round((expanded[mid-1]+expanded[mid])/2*100)/100 : expanded[mid];
+function timeUp() {
+  quizFinished = true;
+  submitQuiz(true);
 }
 
-function generateTask2() {
-  t2data = [];
-  const center = randInt(30,60), spread = randInt(8,15);
-  for(let i=0;i<30;i++) {
-    let v = Math.round(center + (Math.random()-0.5)*2*spread);
-    v = Math.max(1,Math.min(100,v));
-    t2data.push(v);
+// ========================
+// REMARKS
+// ========================
+function addRemark(reason) {
+  if (quizFinished || !quizStarted) return;
+  remarks++;
+  document.getElementById('remarksCount').textContent = remarks;
+  if (remarks >= 2) document.getElementById('remarksCount').classList.add('danger');
+
+  const overlay = document.getElementById('bannerOverlay');
+  const text = document.getElementById('bannerText');
+  const title = document.getElementById('bannerTitle');
+  const icon = document.getElementById('bannerIcon');
+
+  if (remarks >= 3) {
+    quizFinished = true;
+    clearInterval(timerInterval);
+    showScreen('screen-annulled');
+    sendResults(true);
+    return;
   }
-  t2data.sort((a,b)=>a-b);
-  const mn = Math.min(...t2data), mx = Math.max(...t2data);
-  const range = mx-mn || 1;
-  const step = range/BIN_COUNT;
-  t2bins = [];
-  for(let i=0;i<BIN_COUNT;i++) {
-    const lo = mn+i*step, hi = mn+(i+1)*step;
-    const cnt = t2data.filter(v => i===BIN_COUNT-1 ? v>=lo&&v<=hi : v>=lo&&v<hi).length;
-    t2bins.push({lo:Math.round(lo), hi:Math.round(hi), cnt});
+
+  icon.textContent = remarks === 2 ? '🚨' : '⚠️';
+  title.textContent = `Замечание ${remarks}!`;
+  const extra = remarks === 2 ? ' Ещё одно нарушение — работа будет аннулирована!' : '';
+
+  if (reason === 'visibility') {
+    text.textContent = `Зафиксирован уход с вкладки или сворачивание окна.${extra}`;
+  } else if (reason === 'screenshot') {
+    text.textContent = `Зафиксирована попытка снимка экрана.${extra}`;
+  } else {
+    text.textContent = `Нарушение правил выполнения работы.${extra}`;
   }
-  t2mean = Math.round(t2data.reduce((a,b)=>a+b,0)/t2data.length*10)/10;
-  const mid2 = Math.floor(t2data.length/2);
-  t2median = t2data.length%2===0?(t2data[mid2-1]+t2data[mid2])/2:t2data[mid2];
 
-  // update sliders range
-  const maxCnt = Math.max(...t2bins.map(b=>b.cnt))+3;
-  document.querySelectorAll('.hist-slider').forEach(sl=>{ sl.max=maxCnt; });
-  const dataRange = mx-mn;
-  const meanSl = document.getElementById('sl-mean2');
-  const medSl  = document.getElementById('sl-median2');
-  meanSl.min = mn; meanSl.max = mx; meanSl.value = Math.round((mn+mx)/2); meanSl.step=0.1;
-  medSl.min  = mn; medSl.max  = mx; medSl.value = Math.round((mn+mx)/2); medSl.step=0.1;
-  document.getElementById('val-mean2').textContent   = meanSl.value;
-  document.getElementById('val-median2').textContent = medSl.value;
-}
+  overlay.classList.remove('hidden');
 
-// ===== RENDER =====
-function buildTable1() {
-  const t = document.getElementById('table1');
-  t.innerHTML = `<tr><th>x</th>${t1x.map(v=>`<td>${v}</td>`).join('')}</tr>
-    <tr><th>Частота</th>${t1y.map(v=>`<td>${v}</td>`).join('')}</tr>`;
-}
-
-function buildChart1() {
-  const ctx = document.getElementById('chart1').getContext('2d');
-  if(chart1Inst) chart1Inst.destroy();
-  chart1Inst = new Chart(ctx, {
-    type:'bar',
-    data:{ labels:t1x, datasets:[{ label:'Частота', data:t1y,
-      backgroundColor:'rgba(88,166,255,.7)', borderColor:'rgba(88,166,255,1)', borderWidth:1,
-      borderRadius:4 }]},
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false} },
-      scales:{ x:{ticks:{color:'#8b949e'}, grid:{color:'#30363d'}},
-               y:{ticks:{color:'#8b949e'}, grid:{color:'#30363d'}, beginAtZero:true} } }
-  });
-}
-
-function buildDataList2() {
-  const c = document.getElementById('data2-list');
-  c.innerHTML = t2data.map(v=>`<span>${v}</span>`).join('');
-}
-
-function buildSlidersHist() {
-  const c = document.getElementById('sliders-hist');
-  c.innerHTML = '';
-  t2bins.forEach((b,i) => {
-    const maxC = Math.max(...t2bins.map(x=>x.cnt))+5;
-    c.innerHTML += `<div class="slider-group">
-      <div class="slider-label">[${b.lo}–${b.hi}]: <span id="sv${i}">0</span></div>
-      <input type="range" class="hist-slider" id="hs${i}" min="0" max="${maxC}" value="0"
-        oninput="document.getElementById('sv${i}').textContent=this.value; updateChart2()">
-    </div>`;
-  });
-}
-
-function buildChart2() {
-  const ctx = document.getElementById('chart2').getContext('2d');
-  if(chart2Inst) chart2Inst.destroy();
-  const labels = t2bins.map(b=>`${b.lo}–${b.hi}`);
-  chart2Inst = new Chart(ctx, {
-    type:'bar',
-    data:{ labels, datasets:[{ label:'Частота', data:Array(BIN_COUNT).fill(0),
-      backgroundColor:'rgba(63,185,80,.7)', borderColor:'rgba(63,185,80,1)', borderWidth:1,
-      borderRadius:4 }]},
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false} },
-      scales:{ x:{ticks:{color:'#8b949e'}, grid:{color:'#30363d'}},
-               y:{ticks:{color:'#8b949e'}, grid:{color:'#30363d'}, beginAtZero:true} } }
-  });
-}
-
-function updateChart2() {
-  const vals = t2bins.map((_,i) => parseInt(document.getElementById('hs'+i).value)||0);
-  chart2Inst.data.datasets[0].data = vals;
-  chart2Inst.update('none');
-}
-
-// ===== TABS =====
-function showTab(n) {
-  [1,2].forEach(i => {
-    document.getElementById('tab'+i).classList.toggle('active', i===n);
-    document.querySelectorAll('.tab-btn')[i-1].classList.toggle('active', i===n);
-  });
-}
-
-// ===== START =====
-function startTest() {
-  const last = document.getElementById('inp-last').value.trim();
-  const first = document.getElementById('inp-first').value.trim();
-  if(!last || !first) { alert('Введите фамилию и имя'); return; }
-  studentName = last + ' ' + first;
-
-  generateTask1();
-  generateTask2();
-  buildTable1();
-  buildSlidersHist();
-
-  showScreen('screen-tasks');
-  document.getElementById('topbar').style.display = 'flex';
-  document.getElementById('student-name-display').textContent = studentName;
-
-  // wait one tick for canvas to be visible
-  setTimeout(() => { buildChart1(); buildChart2(); }, 50);
-
-  testStarted = true;
-  startTimer();
-}
-
-// ===== SCORING =====
-function calcScore() {
-  let score = 0;
-  const tol = v => Math.abs(v) * 0.05 + 0.5; // 5% tolerance
-
-  // Task 1: chart always shown = 1 point
-  score += 1;
-
-  // mean
-  const ansMean1 = parseFloat(document.getElementById('ans1-mean').value);
-  if(!isNaN(ansMean1) && Math.abs(ansMean1 - t1mean) <= tol(t1mean)) score += 1;
-
-  // median
-  const ansMedian1 = parseFloat(document.getElementById('ans1-median').value);
-  if(!isNaN(ansMedian1) && Math.abs(ansMedian1 - t1median) <= tol(t1median)) score += 1;
-
-  // Task 2: histogram
-  const userBins = t2bins.map((_,i) => parseInt(document.getElementById('hs'+i).value)||0);
-  let histCorrect = true;
-  for(let i=0;i<BIN_COUNT;i++) {
-    if(Math.abs(userBins[i]-t2bins[i].cnt) > 1) { histCorrect=false; break; }
+  if (remarks === 2) {
+    document.getElementById('permWarning').classList.add('show');
   }
-  if(histCorrect) score += 1;
-
-  const ansMean2 = parseFloat(document.getElementById('sl-mean2').value);
-  if(!isNaN(ansMean2) && Math.abs(ansMean2 - t2mean) <= tol(t2mean)) score += 1;
-
-  const ansMedian2 = parseFloat(document.getElementById('sl-median2').value);
-  if(!isNaN(ansMedian2) && Math.abs(ansMedian2 - t2median) <= tol(t2median)) score += 1;
-
-  // penalty for 2+ warnings
-  if(warnings >= 2) score = Math.max(0, score - 1);
-
-  return score;
 }
 
-function getGrade(score) {
-  if(score >= 6) return 5;
-  if(score === 5) return 4;
-  if(score >= 3) return 3;
-  return 2;
+function closeBanner() {
+  document.getElementById('bannerOverlay').classList.add('hidden');
 }
 
-// ===== SUBMIT =====
-function submitWork() {
-  clearInterval(timerInterval);
-  testStarted = false;
-  if(annulled) return;
+// ========================
+// ANTI-CHEAT
+// ========================
+function initAntiCheat() {
+  // Tab/window visibility
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !quizFinished && quizStarted) {
+      addRemark('visibility');
+    }
+  });
 
-  const score = calcScore();
-  const grade = getGrade(score);
+  window.addEventListener('blur', () => {
+    if (!quizFinished && quizStarted) {
+      addRemark('visibility');
+    }
+  });
 
-  const gc = document.getElementById('grade-circle');
-  gc.textContent = grade;
-  gc.className = 'grade-circle grade-'+grade;
-  document.getElementById('result-label').textContent = grade===5?'Отлично!':grade===4?'Хорошо!':grade===3?'Удовлетворительно':'Неудовлетворительно';
-  document.getElementById('result-name').textContent = studentName;
+  // Screenshot attempts
+  document.addEventListener('keydown', (e) => {
+    if (!quizStarted || quizFinished) return;
+    // PrintScreen, Windows+Shift+S, etc.
+    if (e.key === 'PrintScreen' || (e.key === 'S' && e.shiftKey && e.metaKey)) {
+      e.preventDefault();
+      addRemark('screenshot');
+    }
+    // F12 / DevTools
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))) {
+      e.preventDefault();
+    }
+  });
 
-  const t1mean_ans = parseFloat(document.getElementById('ans1-mean').value)||0;
-  const t1med_ans  = parseFloat(document.getElementById('ans1-median').value)||0;
-  const sl_mean2   = parseFloat(document.getElementById('sl-mean2').value)||0;
-  const sl_med2    = parseFloat(document.getElementById('sl-median2').value)||0;
+  // Copy/paste prevention
+  document.addEventListener('copy', (e) => {
+    if (quizStarted && !quizFinished) e.preventDefault();
+  });
 
-  document.getElementById('result-breakdown').innerHTML = `
-    <div><span>Баллов набрано:</span><span class="val">${score} / 6</span></div>
-    <div><span>Замечаний:</span><span class="val">${warnings}</span></div>
-    <div><span>Задание 1 — среднее (${t1mean}):</span><span class="val">${t1mean_ans}</span></div>
-    <div><span>Задание 1 — медиана (${t1median}):</span><span class="val">${t1med_ans}</span></div>
-    <div><span>Задание 2 — среднее (${t2mean}):</span><span class="val">${sl_mean2}</span></div>
-    <div><span>Задание 2 — медиана (${t2median}):</span><span class="val">${sl_med2}</span></div>
-  `;
+  document.addEventListener('contextmenu', (e) => {
+    if (quizStarted && !quizFinished) e.preventDefault();
+  });
 
-  showScreen('screen-result');
-  document.getElementById('topbar').style.display = 'none';
-  sendResults(false, score, grade);
+  // Page leave
+  window.addEventListener('beforeunload', (e) => {
+    if (quizStarted && !quizFinished) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 }
 
-// ===== SEND TO GOOGLE SHEETS =====
-// TODO: Replace with your Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJEzcdUez6dvph52SqmrMiqH-c2Oe-R8iGRNpk3XtYPSplJ62dxFcnyt9bx-LTTR4DXQ/exec';
-
-function sendResults(isAnnulled, score=0, grade=0) {
-  const userBins = t2bins.map((_,i) => parseInt(document.getElementById('hs'+i)?.value||0));
-  const payload = {
-    timestamp: new Date().toISOString(),
-    name: studentName,
-    warnings,
-    annulled: isAnnulled,
-    score: isAnnulled ? 0 : score,
-    grade: isAnnulled ? 0 : grade,
-    t1_mean_correct: t1mean,
-    t1_median_correct: t1median,
-    t1_mean_student: parseFloat(document.getElementById('ans1-mean')?.value)||0,
-    t1_median_student: parseFloat(document.getElementById('ans1-median')?.value)||0,
-    t2_mean_correct: t2mean,
-    t2_median_correct: t2median,
-    t2_mean_student: parseFloat(document.getElementById('sl-mean2')?.value)||0,
-    t2_median_student: parseFloat(document.getElementById('sl-median2')?.value)||0,
-    t2_hist_correct: t2bins.map(b=>b.cnt).join(','),
-    t2_hist_student: userBins.join(','),
-  };
-  fetch(APPS_SCRIPT_URL, {
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  }).catch(()=>{}); // silent fail if URL not configured
-}
-
+// ========================
+// SCREENS
+// ========================
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-</script>
 
-<!-- ============================================================
-     GOOGLE APPS SCRIPT — вставьте в редактор скрипта Google Sheets
-================================================================
-
-function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Результаты') 
-    || SpreadsheetApp.getActiveSpreadsheet().insertSheet('Результаты');
-  
-  const data = JSON.parse(e.postData.contents);
-  
-  if(sheet.getLastRow() === 0) {
-    sheet.appendRow([
-      'Время','Ученик','Замечания','Аннул.','Балл','Оценка',
-      'Ср1 (верн)','Ср1 (учен)','Мед1 (верн)','Мед1 (учен)',
-      'Ср2 (верн)','Ср2 (учен)','Мед2 (верн)','Мед2 (учен)',
-      'Гист2 верн','Гист2 учен'
-    ]);
+function startQuiz() {
+  const ln = document.getElementById('inputLastName').value.trim();
+  const fn = document.getElementById('inputFirstName').value.trim();
+  if (!ln || !fn) {
+    alert('Пожалуйста, введите фамилию и имя.');
+    return;
   }
-  
-  sheet.appendRow([
-    data.timestamp, data.name, data.warnings, data.annulled,
-    data.score, data.grade,
-    data.t1_mean_correct, data.t1_mean_student,
-    data.t1_median_correct, data.t1_median_student,
-    data.t2_mean_correct, data.t2_mean_student,
-    data.t2_median_correct, data.t2_median_student,
-    data.t2_hist_correct, data.t2_hist_student
-  ]);
-  
-  return ContentService.createTextOutput('OK');
+  studentName = `${ln} ${fn}`;
+  document.getElementById('headerName').textContent = studentName;
+  document.getElementById('mainHeader').style.display = 'flex';
+
+  generateTask1();
+  generateTask2();
+
+  showScreen('screen-quiz');
+  quizStarted = true;
+  startTimer();
 }
 
-============================================================ -->
+// ========================
+// SCORING
+// ========================
+function score() {
+  let points = 0;
+  const breakdown = [];
 
+  // Task 1 — diagram shown (always 1 pt)
+  breakdown.push({ label: 'Задание 1: Диаграмма построена', pts: 1 });
+  points += 1;
+
+  // Task 1 — mean
+  const ua1mean = parseFloat(document.getElementById('ans1mean').value);
+  const mean1ok = !isNaN(ua1mean) && Math.abs(ua1mean - t1mean) <= 0.5;
+  breakdown.push({ label: 'Задание 1: Среднее', pts: mean1ok ? 1 : 0 });
+  if (mean1ok) points++;
+
+  // Task 1 — median
+  const ua1med = parseFloat(document.getElementById('ans1median').value);
+  const med1ok = !isNaN(ua1med) && Math.abs(ua1med - t1median) <= 0.5;
+  breakdown.push({ label: 'Задание 1: Медиана', pts: med1ok ? 1 : 0 });
+  if (med1ok) points++;
+
+  // Task 2 — histogram (score if ≥4 of 6 bins correct within ±1)
+  const correctCounts = t2bins.map(b => t2data.filter(v => v >= b.lo && v <= b.hi).length);
+  const histoOk = correctCounts.filter((c,i) => Math.abs(t2histoCounts[i]-c) <= 1).length >= 4;
+  breakdown.push({ label: 'Задание 2: Гистограмма', pts: histoOk ? 1 : 0 });
+  if (histoOk) points++;
+
+  // Task 2 — mean
+  const ua2mean = parseFloat(document.getElementById('ans2mean').value);
+  const mean2ok = !isNaN(ua2mean) && Math.abs(ua2mean - t2mean) <= 1;
+  breakdown.push({ label: 'Задание 2: Среднее', pts: mean2ok ? 1 : 0 });
+  if (mean2ok) points++;
+
+  // Task 2 — median
+  const ua2med = parseFloat(document.getElementById('ans2med').value);
+  const med2ok = !isNaN(ua2med) && Math.abs(ua2med - t2median) <= 1;
+  breakdown.push({ label: 'Задание 2: Медиана', pts: med2ok ? 1 : 0 });
+  if (med2ok) points++;
+
+  // Penalty for remarks
+  if (remarks >= 2) {
+    points = Math.max(0, points - 1);
+    breakdown.push({ label: '2+ замечания: штраф', pts: -1 });
+  }
+
+  let grade;
+  if (points >= 6) grade = 5;
+  else if (points === 5) grade = 4;
+  else if (points >= 3) grade = 3;
+  else grade = 2;
+
+  return { points, grade, breakdown };
+}
+
+function submitQuiz(auto = false) {
+  if (quizFinished && !auto) return;
+  quizFinished = true;
+  clearInterval(timerInterval);
+
+  const { points, grade, breakdown } = score();
+
+  const gradeEl = document.getElementById('resultGrade');
+  gradeEl.textContent = grade;
+  gradeEl.className = `grade-display grade-${grade}`;
+  document.getElementById('resultScore').textContent = `${points} из 6 баллов${remarks > 0 ? ` · Замечаний: ${remarks}` : ''}`;
+
+  let detailHtml = '';
+  breakdown.forEach(r => {
+    detailHtml += `<div class="result-row">
+      <span>${r.label}</span>
+      <span class="result-points" style="color:${r.pts>0?'var(--accent)':r.pts<0?'var(--accent2)':'var(--text-muted)'}">${r.pts>0?'+':''}${r.pts} б.</span>
+    </div>`;
+  });
+  document.getElementById('resultDetails').innerHTML = detailHtml;
+
+  showScreen('screen-result');
+  document.getElementById('mainHeader').style.display = 'none';
+
+  sendResults(false, points, grade);
+}
+
+// ========================
+// GOOGLE SHEETS
+// ========================
+function sendResults(annulled = false, points = 0, grade = 0) {
+  const statusEl = annulled
+    ? document.getElementById('statusAnnulled')
+    : document.getElementById('statusSent');
+
+  const payload = {
+    name: studentName,
+    timestamp: new Date().toLocaleString('ru-RU'),
+    annulled: annulled,
+    remarks: remarks,
+    points: annulled ? 0 : points,
+    grade: annulled ? 'Аннул.' : grade,
+    t1mean_correct: t1mean,
+    t1median_correct: t1median,
+    t1mean_student: document.getElementById('ans1mean').value,
+    t1median_student: document.getElementById('ans1median').value,
+    t2mean_correct: t2mean,
+    t2median_correct: t2median,
+    t2mean_student: document.getElementById('ans2mean').value,
+    t2median_student: document.getElementById('ans2med').value,
+  };
+
+  if (statusEl) statusEl.textContent = '⏳ Отправка результатов...';
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(() => {
+    if (statusEl) {
+      statusEl.textContent = '✅ Результаты отправлены учителю';
+      statusEl.className = 'status-sent';
+    }
+  }).catch(() => {
+    if (statusEl) {
+      statusEl.textContent = '⚠️ Не удалось отправить результаты. Сообщите учителю.';
+      statusEl.className = 'status-sent error';
+    }
+  });
+}
+
+// ========================
+// INIT
+// ========================
+initAntiCheat();
+</script>
 </body>
 </html>
