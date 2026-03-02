@@ -2,1260 +2,824 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Проверочная работа — Статистика</title>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Проверочная работа</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@400;500;600&display=swap');
+
   :root {
-    --bg: #0e0f17;
-    --surface: #161824;
-    --surface2: #1d2035;
-    --accent: #5b7fff;
-    --accent2: #ff6b6b;
-    --accent3: #4ecdc4;
-    --gold: #ffd166;
-    --text: #e8eaf6;
-    --muted: #6b7280;
-    --border: rgba(91,127,255,0.18);
+    --bg: #0d0f14;
+    --surface: #161b26;
+    --surface2: #1e2535;
+    --accent: #4f8ef7;
+    --accent2: #6ee7c7;
+    --danger: #ff4d6d;
+    --warn: #ffb347;
+    --text: #e8eaf0;
+    --muted: #7a839a;
+    --border: rgba(255,255,255,0.07);
     --radius: 16px;
-    --radius-sm: 8px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
 
   body {
-    font-family: 'Jost', sans-serif;
+    font-family: 'Manrope', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
-    user-select: none;
     -webkit-user-select: none;
-    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* BG grid */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(91,127,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(91,127,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(79,142,247,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(110,231,199,0.08) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
 
-  .page { position: relative; z-index: 1; }
-
-  /* ============ HEADER ============ */
-  .header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    background: rgba(14,15,23,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 20px;
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    min-height: 100vh;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+  }
+
+  .top-bar {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
     gap: 12px;
   }
 
-  .header-title {
+  .logo {
     font-family: 'Unbounded', sans-serif;
-    font-size: clamp(10px, 3vw, 14px);
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
     color: var(--accent);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
+    text-transform: uppercase;
   }
 
-  .timer-wrap {
+  .timer-box {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 40px;
-    padding: 6px 14px;
-    flex-shrink: 0;
-  }
-
-  .timer-icon { font-size: 16px; }
-  #timer {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--gold);
-    letter-spacing: 2px;
-    min-width: 52px;
-    text-align: center;
-  }
-
-  #timer.danger { color: var(--accent2); animation: pulse 1s infinite; }
-
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
-
-  .warn-badge {
-    background: var(--surface2);
-    border: 1px solid var(--accent2);
-    border-radius: 40px;
-    padding: 6px 12px;
-    font-size: 12px;
-    color: var(--accent2);
-    flex-shrink: 0;
-    font-weight: 500;
-  }
-
-  /* ============ MAIN ============ */
-  .main {
-    padding: 90px 16px 40px;
-    max-width: 680px;
-    margin: 0 auto;
-  }
-
-  /* ============ SCREEN: LOGIN ============ */
-  #screen-login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-    text-align: center;
-  }
-
-  .login-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 40px 32px;
-    max-width: 420px;
-    width: 100%;
-    box-shadow: 0 0 60px rgba(91,127,255,0.08);
-  }
-
-  .login-logo {
+    border-radius: 40px;
+    padding: 8px 16px;
     font-family: 'Unbounded', sans-serif;
-    font-size: 32px;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--accent3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 8px;
-  }
-
-  .login-sub {
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 32px;
-  }
-
-  .field-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--muted);
-    text-align: left;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-  }
-
-  .field-input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    font-family: 'Jost', sans-serif;
-    font-size: 16px;
-    color: var(--text);
-    outline: none;
-    margin-bottom: 16px;
-    transition: border-color 0.2s;
-  }
-
-  .field-input:focus { border-color: var(--accent); }
-
-  .btn-primary {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent), #7b5ea7);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 16px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
-    color: #fff;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    margin-top: 8px;
+    transition: color 0.3s, border-color 0.3s;
   }
+  .timer-box.warn { color: var(--warn); border-color: rgba(255,179,71,0.4); }
+  .timer-box.danger { color: var(--danger); border-color: rgba(255,77,109,0.4); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .timer-icon { font-size: 16px; }
 
-  .btn-primary:hover { opacity: 0.9; }
-  .btn-primary:active { transform: scale(0.98); }
+  .screen { display: none; flex-direction: column; flex: 1; animation: fadeIn 0.4s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
 
-  /* ============ TASK CARDS ============ */
-  .task-card {
+  .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-  }
-
-  .task-tag {
-    display: inline-block;
-    background: linear-gradient(135deg, var(--accent), #7b5ea7);
-    border-radius: 40px;
-    padding: 4px 14px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
-  }
-
-  .task-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(14px, 4vw, 18px);
-    font-weight: 600;
+    padding: 28px 24px;
     margin-bottom: 16px;
-    line-height: 1.4;
   }
 
-  /* Numbers display */
-  .numbers-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 16px 0;
-    justify-content: center;
-  }
-
-  .num-chip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
+  .login-title {
     font-family: 'Unbounded', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--accent3);
-    min-width: 46px;
-    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
-
-  /* Answer fields */
-  .answer-group {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .answer-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-  }
-
-  .answer-label {
-    font-size: 14px;
-    font-weight: 500;
+  .login-sub {
     color: var(--muted);
-    flex: 1;
-    min-width: 80px;
+    font-size: 14px;
+    margin-bottom: 28px;
+    line-height: 1.6;
   }
 
-  .answer-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 2px 10px;
-    font-size: 11px;
-    color: var(--gold);
+  label {
+    display: block;
+    font-size: 12px;
     font-weight: 600;
-    white-space: nowrap;
-    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
   }
 
-  .answer-input {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-family: 'Jost', sans-serif;
-    font-size: 16px;
+  input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
     color: var(--text);
     outline: none;
-    width: 110px;
-    text-align: center;
     transition: border-color 0.2s;
-    flex-shrink: 0;
-  }
-
-  .answer-input:focus { border-color: var(--accent); }
-
-  /* ============ TASK 2 — CHART ============ */
-  .chart-section { margin-top: 20px; }
-
-  .intervals-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
     margin-bottom: 16px;
+    -webkit-user-select: text;
+    user-select: text;
   }
+  input[type="text"]:focus { border-color: var(--accent); }
 
-  .interval-chip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .interval-chip span {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .chart-container {
+  .btn {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    gap: 10px;
-    height: 220px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 16px 12px 8px;
-    margin-bottom: 20px;
-    position: relative;
-  }
-
-  /* Y-axis lines */
-  .chart-container::before {
-    content: '';
-    position: absolute;
-    inset: 16px 12px 28px;
-    background-image: repeating-linear-gradient(
-      to top,
-      transparent,
-      transparent calc(20% - 1px),
-      rgba(91,127,255,0.12) calc(20% - 1px),
-      rgba(91,127,255,0.12) 20%
-    );
-    pointer-events: none;
-  }
-
-  .bar-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-    height: 100%;
-    position: relative;
-    z-index: 1;
-  }
-
-  .bar-count {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 10px;
-    color: var(--gold);
-    min-height: 16px;
-    text-align: center;
-  }
-
-  .bar-track {
-    flex: 1;
+    gap: 8px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    padding: 15px;
+    border-radius: 12px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
+    border: none;
+    transition: transform 0.15s, opacity 0.15s;
   }
-
-  .bar-fill {
-    background: linear-gradient(to top, var(--accent), var(--accent3));
-    border-radius: 4px 4px 0 0;
-    width: 100%;
-    transition: height 0.2s;
-    min-height: 2px;
-    position: relative;
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #3a6fd8);
+    color: #fff;
   }
-
-  .bar-fill::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, rgba(255,255,255,0.1), transparent);
-    border-radius: inherit;
-  }
-
-  .bar-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-align: center;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  .slider-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+  .btn-primary:hover { opacity: 0.92; }
+  .btn-success {
+    background: linear-gradient(135deg, var(--accent2), #3ab89a);
+    color: #0d0f14;
     margin-top: 8px;
   }
 
-  .bar-slider {
-    width: 100%;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
+  .task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
   }
-
-  .bar-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: 2px solid var(--bg);
-    box-shadow: 0 0 8px rgba(91,127,255,0.5);
-  }
-
-  .target-hint {
-    background: rgba(255,209,102,0.08);
-    border: 1px dashed rgba(255,209,102,0.3);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    font-size: 12px;
-    color: var(--muted);
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  .target-hint strong { color: var(--gold); }
-
-  /* ============ SUBMIT ============ */
-  .submit-section {
-    text-align: center;
-    margin-top: 32px;
-    padding-bottom: 40px;
-  }
-
-  .btn-submit {
-    background: linear-gradient(135deg, var(--accent3), var(--accent));
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 18px 48px;
+  .task-num {
     font-family: 'Unbounded', sans-serif;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
-    color: #fff;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    width: 100%;
-    max-width: 320px;
-    box-shadow: 0 8px 32px rgba(78,205,196,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
   }
 
-  .btn-submit:hover { opacity: 0.9; }
-  .btn-submit:active { transform: scale(0.98); }
-
-  /* ============ OVERLAY ============ */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(14,15,23,0.92);
-    backdrop-filter: blur(8px);
-    z-index: 200;
+  .task-img-placeholder {
+    width: 100%;
+    min-height: 200px;
+    background: var(--surface2);
+    border: 2px dashed rgba(79,142,247,0.3);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
-  }
-
-  .overlay.active { display: flex; }
-
-  .overlay-card {
-    background: var(--surface);
-    border: 2px solid var(--accent2);
-    border-radius: 24px;
-    padding: 36px 32px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 0 60px rgba(255,107,107,0.2);
-    animation: pop 0.3s ease;
-  }
-
-  @keyframes pop {
-    from { transform: scale(0.85); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .overlay-icon { font-size: 48px; margin-bottom: 16px; }
-
-  .overlay-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--accent2);
-    margin-bottom: 12px;
-  }
-
-  .overlay-text {
-    font-size: 15px;
-    color: var(--text);
-    line-height: 1.6;
-    margin-bottom: 24px;
-  }
-
-  .warn-count {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--accent2);
-    display: block;
-    margin: 8px 0;
-  }
-
-  .btn-dismiss {
-    background: var(--accent2);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 14px 32px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    width: 100%;
-  }
-
-  .btn-dismiss:hover { opacity: 0.85; }
-
-  /* ============ RESULT SCREEN ============ */
-  #screen-result {
-    display: none;
-    padding: 90px 24px 40px;
-    max-width: 560px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .result-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 40px 32px;
-    margin-bottom: 24px;
-  }
-
-  .grade-display {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 80px;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--gold), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1;
-    margin-bottom: 12px;
-  }
-
-  .grade-label {
-    font-size: 18px;
+    gap: 10px;
     color: var(--muted);
-    margin-bottom: 24px;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
   }
-
-  .score-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 15px;
+  .task-img-placeholder img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    display: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
   }
+  .img-icon { font-size: 36px; opacity: 0.5; }
 
-  .score-row:last-child { border-bottom: none; }
-
-  .score-val {
-    font-family: 'Unbounded', sans-serif;
+  .answer-label {
     font-size: 14px;
     font-weight: 600;
-    color: var(--accent3);
+    margin-bottom: 8px;
+    color: var(--text);
   }
 
-  .result-note {
-    font-size: 13px;
+  .answer-row { display: flex; gap: 10px; }
+
+  .answer-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  .answer-input:focus { border-color: var(--accent2); }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    transition: all 0.3s;
+  }
+  .dot.done { background: var(--accent2); border-color: var(--accent2); }
+  .dot.current { background: var(--accent); border-color: var(--accent); transform: scale(1.3); }
+
+  /* RESULT - no scores shown */
+  .result-icon { font-size: 64px; text-align: center; margin-bottom: 16px; }
+  .result-name {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .result-sub {
+    text-align: center;
+    font-size: 14px;
     color: var(--muted);
     line-height: 1.6;
-    margin-top: 16px;
   }
 
-  .annulled {
-    background: rgba(255,107,107,0.1);
-    border: 2px solid var(--accent2);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
+  .cancelled-icon { font-size: 64px; text-align: center; margin-bottom: 16px; }
+  .cancelled-title {
     font-family: 'Unbounded', sans-serif;
-    font-size: 16px;
-    color: var(--accent2);
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--danger);
+    text-align: center;
+    margin-bottom: 8px;
   }
+  .cancelled-text { text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
-  /* ============ SENDING ============ */
-  .sending-overlay {
+  .nav-hint { font-size: 12px; color: var(--muted); text-align: center; margin-top: 12px; }
+
+  .banner-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(14,15,23,0.95);
-    z-index: 300;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .banner-overlay.show { display: flex; }
+
+  .banner-card {
+    background: var(--surface);
+    border: 1.5px solid rgba(255,77,109,0.5);
+    border-radius: 20px;
+    padding: 32px 24px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    animation: bounceIn 0.4s ease;
+  }
+  @keyframes bounceIn {
+    0%{transform:scale(0.8);opacity:0}
+    70%{transform:scale(1.05)}
+    100%{transform:scale(1);opacity:1}
+  }
+  .banner-icon { font-size: 48px; margin-bottom: 16px; }
+  .banner-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--danger);
+    margin-bottom: 10px;
+  }
+  .banner-text { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .banner-count { font-size: 13px; color: var(--warn); font-weight: 600; margin-bottom: 16px; }
+
+  /* Devtools warning */
+  #devtoolsWarning {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0d0f14;
+    z-index: 9999;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 16px;
+    text-align: center;
+    padding: 40px;
+  }
+  #devtoolsWarning.show { display: flex; }
+  #devtoolsWarning .dw-icon { font-size: 64px; margin-bottom: 20px; }
+  #devtoolsWarning .dw-title {
     font-family: 'Unbounded', sans-serif;
-    font-size: 14px;
-    color: var(--muted);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--danger);
+    margin-bottom: 12px;
   }
+  #devtoolsWarning .dw-text { color: var(--muted); font-size: 14px; line-height: 1.7; }
 
-  .sending-overlay.active { display: flex; }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Readonly look */
-  input[readonly] { opacity: 0.6; cursor: not-allowed; }
-
-  /* Correct/wrong coloring after submit */
-  .correct .answer-input { border-color: var(--accent3); color: var(--accent3); }
-  .wrong .answer-input { border-color: var(--accent2); color: var(--accent2); }
-
-  @media (max-width: 480px) {
-    .login-card { padding: 28px 20px; }
-    .task-card { padding: 18px 14px; }
-    .answer-row { flex-wrap: wrap; gap: 8px; }
-    .answer-input { width: 90px; }
+  @media (max-width: 400px) {
+    .card { padding: 20px 16px; }
+    .login-title { font-size: 18px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
-<div class="header" id="main-header" style="display:none">
-  <div class="header-title" id="student-name-display">Ученик</div>
-  <div class="warn-badge" id="warn-display">⚠️ 0</div>
-  <div class="timer-wrap">
-    <span class="timer-icon">⏱</span>
-    <span id="timer">20:00</span>
-  </div>
+<!-- DevTools overlay -->
+<div id="devtoolsWarning">
+  <div class="dw-icon">🔒</div>
+  <div class="dw-title">Доступ закрыт</div>
+  <div class="dw-text">Обнаружены инструменты разработчика.<br>Закрой DevTools и обратись к учителю.</div>
 </div>
 
-<!-- ========== LOGIN SCREEN ========== -->
-<div id="screen-login" class="page">
-  <div class="login-card">
-    <div class="login-logo">📊 Стат</div>
-    <div class="login-sub">Проверочная работа по статистике<br>Время: 20 минут</div>
-    <label class="field-label" for="inp-last">Фамилия</label>
-    <input class="field-input" type="text" id="inp-last" placeholder="Иванов" autocomplete="family-name">
-    <label class="field-label" for="inp-first">Имя</label>
-    <input class="field-input" type="text" id="inp-first" placeholder="Иван" autocomplete="given-name">
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;text-align:left;">
-      ⚠️ После старта нельзя покидать страницу.<br>
-      📵 Скриншоты и копирование запрещены.<br>
-      ⏰ 20 минут — не останавливайте таймер.
+<div class="wrapper">
+  <div class="top-bar" id="topBar" style="display:none">
+    <div class="logo">📝 Контроль</div>
+    <div class="timer-box" id="timerBox">
+      <span class="timer-icon">⏱</span>
+      <span id="timerDisplay">20:00</span>
     </div>
-    <button class="btn-primary" onclick="startQuiz()">Начать работу →</button>
   </div>
-</div>
 
-<!-- ========== QUIZ SCREEN ========== -->
-<div id="screen-quiz" class="page" style="display:none">
-  <div class="main">
+  <!-- LOGIN -->
+  <div class="screen active" id="screenLogin">
+    <div class="card" style="margin-top:auto;margin-bottom:auto">
+      <div class="login-title">Проверочная работа</div>
+      <div class="login-sub">Введи своё имя и фамилию, чтобы начать. У тебя будет 20 минут. Не покидай страницу во время работы.</div>
+      <label>Фамилия</label>
+      <input type="text" id="inputSurname" placeholder="Иванов" autocomplete="off">
+      <label>Имя</label>
+      <input type="text" id="inputName" placeholder="Иван" autocomplete="off">
+      <button class="btn btn-primary" onclick="startQuiz()">▶ Начать работу</button>
+    </div>
+  </div>
 
-    <!-- TASK 1 -->
-    <div class="task-card">
-      <span class="task-tag">Задание 1 · 3 балла</span>
-      <div class="task-title">Анализ числового ряда</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:8px;">Дан набор из 20 целых чисел. Вычислите статистические характеристики.</p>
-      <div class="numbers-grid" id="task1-numbers"></div>
-      <div class="answer-group">
-        <div class="answer-row" id="row-mean">
-          <span class="answer-label">Среднее</span>
-          <span class="answer-badge">1 балл</span>
-          <input class="answer-input" type="number" id="ans-mean" placeholder="0" step="0.01">
-        </div>
-        <div class="answer-row" id="row-median">
-          <span class="answer-label">Медиана</span>
-          <span class="answer-badge">1 балл</span>
-          <input class="answer-input" type="number" id="ans-median" placeholder="0" step="0.01">
-        </div>
-        <div class="answer-row" id="row-range">
-          <span class="answer-label">Размах</span>
-          <span class="answer-badge">1 балл</span>
-          <input class="answer-input" type="number" id="ans-range" placeholder="0">
-        </div>
+  <!-- TASK -->
+  <div class="screen" id="screenTask">
+    <div class="dots" id="dotsBar"></div>
+
+    <div class="card">
+      <div class="task-header">
+        <span class="task-num" id="taskNum">Задание 1</span>
+        <!-- Variant intentionally hidden from student -->
+      </div>
+
+      <div class="task-img-placeholder" id="imgPlaceholder">
+        <div class="img-icon" id="imgIcon">🖼</div>
+        <div id="imgLabel">Изображение с заданием</div>
+        <img id="taskImage" src="" alt="Задание" draggable="false">
+      </div>
+
+      <div class="answer-label">Твой ответ:</div>
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="answerInput" placeholder="Введи ответ..." inputmode="decimal" autocomplete="off">
       </div>
     </div>
 
-    <!-- TASK 2 -->
-    <div class="task-card">
-      <span class="task-tag">Задание 2 · 3 балла</span>
-      <div class="task-title">Построение гистограммы</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Дан набор из 20 значений. Постройте гистограмму (6 столбиков), используя ползунки. Затем найдите среднее и медиану.</p>
-      <div class="numbers-grid" id="task2-numbers"></div>
-      <div class="intervals-info" id="intervals-info"></div>
-      <div class="target-hint" id="target-hint">
-        Распределите числа по интервалам: <strong>сумма всех столбиков = 20</strong>
-      </div>
-      <div class="chart-section">
-        <div class="chart-container" id="chart-container"></div>
-        <div style="display:flex;gap:10px;margin-bottom:16px;" id="sliders-row"></div>
-      </div>
-      <div id="dist-score-info" style="font-size:12px;color:var(--muted);margin-bottom:8px;text-align:center;"></div>
-      <div class="answer-group">
-        <div class="answer-row" id="row-mean2">
-          <span class="answer-label">Среднее</span>
-          <span class="answer-badge">1 балл</span>
-          <input class="answer-input" type="number" id="ans-mean2" placeholder="0" step="0.01">
-        </div>
-        <div class="answer-row" id="row-median2">
-          <span class="answer-label">Медиана</span>
-          <span class="answer-badge">1 балл</span>
-          <input class="answer-input" type="number" id="ans-median2" placeholder="0" step="0.01">
-        </div>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextTask()">Следующее задание →</button>
+    <div class="nav-hint" id="navHint">Задание 1 из 4</div>
+  </div>
+
+  <!-- RESULT - no grades, no correct answers shown -->
+  <div class="screen" id="screenResult">
+    <div class="card" style="margin-top:auto;margin-bottom:auto;text-align:center">
+      <div class="result-icon">✅</div>
+      <div class="result-name" id="resultName">Иван Иванов</div>
+      <div class="result-sub">
+        Работа успешно сдана.<br>
+        Результаты будут объявлены учителем.<br><br>
+        <span style="color:var(--muted);font-size:12px">Можешь закрыть страницу.</span>
       </div>
     </div>
+  </div>
 
-    <div class="submit-section">
-      <button class="btn-submit" onclick="submitQuiz()">Сдать работу ✓</button>
+  <!-- CANCELLED -->
+  <div class="screen" id="screenCancelled">
+    <div class="card" style="margin-top:auto;margin-bottom:auto">
+      <div class="cancelled-icon">🚫</div>
+      <div class="cancelled-title">Работа аннулирована</div>
+      <div class="cancelled-text">Зафиксировано критическое нарушение. Работа не принята. Обратись к учителю.</div>
     </div>
   </div>
 </div>
 
-<!-- ========== RESULT SCREEN ========== -->
-<div id="screen-result" class="page">
-  <div style="max-width:560px;margin:0 auto;padding:0 16px;">
-    <div id="result-annulled" class="annulled" style="display:none">
-      🚫 Работа аннулирована<br><span style="font-size:13px;font-weight:400;color:var(--text);">3 и более замечаний</span>
-    </div>
-    <div class="result-card" id="result-card">
-      <div class="grade-display" id="result-grade">—</div>
-      <div class="grade-label">Итоговая оценка</div>
-      <div class="score-row">
-        <span>Задание 1: Среднее</span>
-        <span class="score-val" id="r-mean">—</span>
-      </div>
-      <div class="score-row">
-        <span>Задание 1: Медиана</span>
-        <span class="score-val" id="r-median">—</span>
-      </div>
-      <div class="score-row">
-        <span>Задание 1: Размах</span>
-        <span class="score-val" id="r-range">—</span>
-      </div>
-      <div class="score-row">
-        <span>Задание 2: Гистограмма</span>
-        <span class="score-val" id="r-hist">—</span>
-      </div>
-      <div class="score-row">
-        <span>Задание 2: Среднее</span>
-        <span class="score-val" id="r-mean2">—</span>
-      </div>
-      <div class="score-row">
-        <span>Задание 2: Медиана</span>
-        <span class="score-val" id="r-median2">—</span>
-      </div>
-      <div class="score-row" style="margin-top:8px;border-top:2px solid var(--border);">
-        <span style="font-weight:600;">Итого баллов</span>
-        <span class="score-val" id="r-total">—</span>
-      </div>
-      <div class="score-row">
-        <span>Замечаний</span>
-        <span class="score-val" style="color:var(--accent2)" id="r-warns">—</span>
-      </div>
-      <p class="result-note" id="r-note"></p>
-    </div>
-    <p style="font-size:13px;color:var(--muted);text-align:center;">Результаты отправлены учителю. Можно закрыть страницу.</p>
+<!-- WARNING BANNER -->
+<div class="banner-overlay" id="bannerOverlay">
+  <div class="banner-card">
+    <div class="banner-icon">⚠️</div>
+    <div class="banner-title">Замечание!</div>
+    <div class="banner-text" id="bannerText">Зафиксировано нарушение.</div>
+    <div class="banner-count" id="bannerCount">Предупреждение 1 из 2</div>
+    <button class="btn btn-primary" onclick="dismissBanner()">Понял, продолжаю</button>
   </div>
-</div>
-
-<!-- ========== OVERLAYS ========== -->
-<div class="overlay" id="overlay-warn">
-  <div class="overlay-card">
-    <div class="overlay-icon">⚠️</div>
-    <div class="overlay-title">Замечание!</div>
-    <div class="overlay-text">
-      Вы покинули страницу или переключились на другую вкладку.<br>
-      <span class="warn-count" id="overlay-warn-count">1</span>
-      замечание(й) получено
-      <br><span style="font-size:13px;color:var(--muted)" id="overlay-warn-sub"></span>
-    </div>
-    <button class="btn-dismiss" onclick="dismissWarning()">Понял(а), продолжить</button>
-  </div>
-</div>
-
-<div class="overlay" id="overlay-annulled">
-  <div class="overlay-card" style="border-color:var(--accent2)">
-    <div class="overlay-icon">🚫</div>
-    <div class="overlay-title">Работа аннулирована</div>
-    <div class="overlay-text">
-      Вы получили 3 и более замечаний. Работа автоматически аннулирована.
-    </div>
-    <button class="btn-dismiss" onclick="forceSubmit()">Завершить</button>
-  </div>
-</div>
-
-<div class="overlay" id="overlay-timeout">
-  <div class="overlay-card" style="border-color:var(--gold)">
-    <div class="overlay-icon">⏰</div>
-    <div class="overlay-title">Время вышло!</div>
-    <div class="overlay-text">20 минут истекло. Работа сдаётся автоматически.</div>
-    <button class="btn-dismiss" onclick="forceSubmit()">Завершить</button>
-  </div>
-</div>
-
-<!-- ========== SENDING ========== -->
-<div class="sending-overlay" id="sending-overlay">
-  <div class="spinner"></div>
-  <span>Отправка результатов…</span>
 </div>
 
 <script>
-// ==========================================
-// GOOGLE SHEETS CONFIGURATION
-// Replace with your deployed Apps Script URL
-// ==========================================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTlATSHPwsqeysOFbUKG_umi0x7fGO4-LdeYgHZxa3Pxh-BmhsA8IRTmLHM9OIPyXf/exec';
+// =====================
+// CONFIGURATION
+// =====================
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyMxyj0L5_UWuAnzxOB--Vvh3zoxUWn_zZtWHj-9R72ByaEjxtrZN44183TIevBiHk/exec';
 
-// ==========================================
+// Correct answers indexed by task (0-3) then variant (0-3)
+const CORRECT_ANSWERS = [
+  [0.5,   0.3,    0.5,    0.5   ],
+  [0.096, 0.75,   0.9409, 0.87  ],
+  [9,     30.5,   3,      3750  ],
+  [11,    -28,    18,     24    ]
+];
+
+// =====================
 // STATE
-// ==========================================
+// =====================
 let studentName = '';
+let variant = 0;
+let currentTask = 0;
+let answers = ['', '', '', ''];
+let violations = 0;
 let timerInterval = null;
 let secondsLeft = 20 * 60;
-let warnings = 0;
 let quizActive = false;
-let quizSubmitted = false;
+let finished = false;
+let bannerActive = false;
 
-// Task 1 data
-let t1_numbers = [];
-let t1_correct = { mean: 0, median: 0, range: 0 };
+// =====================
+// ANTI-CHEAT: DevTools Detection
+// =====================
+let devtoolsOpen = false;
 
-// Task 2 data
-let t2_numbers = [];
-let t2_correct = { mean: 0, median: 0 };
-let t2_intervals = [];
-let t2_correctDist = [];
-let sliderValues = [0,0,0,0,0,0];
+function checkDevTools() {
+  const threshold = 160;
+  const widthDiff = window.outerWidth - window.innerWidth;
+  const heightDiff = window.outerHeight - window.innerHeight;
+  const open = widthDiff > threshold || heightDiff > threshold;
 
-// ==========================================
-// ANTI-COPY
-// ==========================================
-document.addEventListener('copy', e => e.preventDefault());
-document.addEventListener('cut', e => e.preventDefault());
-document.addEventListener('contextmenu', e => { if(quizActive) e.preventDefault(); });
+  if (open && !devtoolsOpen) {
+    devtoolsOpen = true;
+    if (quizActive && !finished) {
+      // Instant cancel on devtools open
+      document.getElementById('devtoolsWarning').classList.add('show');
+      setTimeout(cancelQuiz, 1200);
+    }
+  } else if (!open && devtoolsOpen) {
+    devtoolsOpen = false;
+  }
+}
+
+// Debugger trap - slows/detects devtools
+function debuggerTrap() {
+  if (!quizActive || finished) return;
+  const start = performance.now();
+  // eslint-disable-next-line no-debugger
+  debugger;
+  const elapsed = performance.now() - start;
+  if (elapsed > 100) {
+    // Debugger was paused — devtools open
+    if (!devtoolsOpen) {
+      devtoolsOpen = true;
+      document.getElementById('devtoolsWarning').classList.add('show');
+      setTimeout(cancelQuiz, 1200);
+    }
+  }
+}
+
+setInterval(checkDevTools, 800);
+setInterval(debuggerTrap, 3000);
+
+// =====================
+// ANTI-CHEAT: Disable interactions
+// =====================
+
+// Right-click
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Drag
+document.addEventListener('dragstart', e => e.preventDefault());
+document.addEventListener('drag', e => e.preventDefault());
+
+// Copy / Cut / Paste (from clipboard)
+document.addEventListener('copy', e => { if (quizActive) e.preventDefault(); });
+document.addEventListener('cut', e => { if (quizActive) e.preventDefault(); });
+
+// Touch long-press (iOS callout disabled via CSS, but also JS)
+document.addEventListener('touchstart', e => {
+  if (quizActive && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+// Key combos
 document.addEventListener('keydown', e => {
   if (!quizActive) return;
-  if (e.key === 'PrintScreen') {
+  const key = e.key.toLowerCase();
+  const ctrl = e.ctrlKey || e.metaKey;
+  const blocked = (
+    ctrl && ['c','u','s','p','a','j','i','k','l','f'].includes(key)
+  ) || e.key === 'F12' || e.key === 'F5' || e.key === 'F10' || e.key === 'F11';
+
+  if (blocked) {
     e.preventDefault();
-    navigator.clipboard?.writeText('').catch(()=>{});
-  }
-  if ((e.ctrlKey||e.metaKey) && ['c','x','a','p','s'].includes(e.key.toLowerCase())) {
-    // allow ctrl+a only in inputs
-    if (e.key.toLowerCase() === 'a') return;
-    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === 'PrintScreen') handleViolation('screenshot');
   }
 });
 
-// Screenshot detection via visibility / blur
+// PrintScreen on keyup
+document.addEventListener('keyup', e => {
+  if (!quizActive || finished) return;
+  if (e.key === 'PrintScreen') {
+    handleViolation('screenshot');
+  }
+});
+
+// =====================
+// ANTI-CHEAT: Visibility / Focus
+// =====================
+
+// Use a lock mechanism to avoid duplicate triggers
+let violationLock = false;
+
 document.addEventListener('visibilitychange', () => {
-  if (!quizActive || quizSubmitted) return;
-  if (document.hidden) triggerWarning();
+  if (!quizActive || finished) return;
+  if (document.hidden) {
+    triggerViolation('Ты покинул страницу во время работы.');
+  }
 });
 
 window.addEventListener('blur', () => {
-  if (!quizActive || quizSubmitted) return;
-  triggerWarning();
+  if (!quizActive || finished || bannerActive) return;
+  // Only fire if focus truly left the browser window (not just moved to an input/button inside the page)
+  setTimeout(() => {
+    if (!quizActive || finished || bannerActive) return;
+    // If focus is now inside the document — it's just an internal element focus, not a tab switch
+    if (document.hasFocus()) return;
+    triggerViolation('Ты переключился с вкладки во время работы.');
+  }, 300);
 });
 
-// beforeunload
+// Fullscreen exit detection (optional — uncomment if you want to require fullscreen)
+// document.addEventListener('fullscreenchange', () => { ... });
+
 window.addEventListener('beforeunload', e => {
-  if (!quizActive || quizSubmitted) return;
-  e.preventDefault();
-  e.returnValue = '';
+  if (quizActive && !finished) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
 });
 
-// ==========================================
-// WARNINGS
-// ==========================================
-function triggerWarning() {
-  warnings++;
-  document.getElementById('warn-display').textContent = `⚠️ ${warnings}`;
-  document.getElementById('overlay-warn-count').textContent = warnings;
+// Detect iframe embedding (anti-framing)
+if (window.self !== window.top) {
+  document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#ff4d6d;font-family:sans-serif"><h2>Доступ запрещён</h2><p>Страница не может быть встроена.</p></div>';
+}
 
-  let sub = '';
-  if (warnings >= 3) {
-    sub = 'Работа аннулирована!';
-  } else if (warnings === 2) {
-    sub = 'Ещё одно — работа будет аннулирована. −1 балл уже применён.';
-  } else {
-    sub = '2 замечания = −1 балл. 3 = аннулирование.';
+function triggerViolation(message) {
+  if (violationLock) return;
+  violationLock = true;
+  setTimeout(() => { violationLock = false; }, 1500);
+  handleViolation(message);
+}
+
+function handleViolation(message) {
+  if (!quizActive || finished) return;
+  violations++;
+
+  if (violations >= 3) {
+    cancelQuiz();
+    return;
   }
-  document.getElementById('overlay-warn-sub').textContent = sub;
-  document.getElementById('overlay-warn').classList.add('active');
+
+  bannerActive = true;
+  const isLast = violations === 2;
+  document.getElementById('bannerText').textContent =
+    typeof message === 'string' ? message : 'Зафиксировано нарушение.';
+  document.getElementById('bannerCount').textContent = isLast
+    ? '⛔ Это последнее предупреждение. Следующее нарушение = аннулирование.'
+    : `Предупреждение ${violations} из 2`;
+  document.getElementById('bannerOverlay').classList.add('show');
 }
 
-function dismissWarning() {
-  document.getElementById('overlay-warn').classList.remove('active');
-  if (warnings >= 3) {
-    document.getElementById('overlay-warn').classList.remove('active');
-    document.getElementById('overlay-annulled').classList.add('active');
+function handleViolation(msg) {
+  if (!quizActive || finished) return;
+  violations++;
+
+  if (violations >= 3) {
+    cancelQuiz();
+    return;
   }
+
+  bannerActive = true;
+  document.getElementById('bannerText').textContent =
+    typeof msg === 'string' ? msg : 'Зафиксировано нарушение.';
+  document.getElementById('bannerCount').textContent = violations === 2
+    ? '⛔ Последнее предупреждение! Следующее нарушение аннулирует работу.'
+    : `Предупреждение ${violations} из 2`;
+  document.getElementById('bannerOverlay').classList.add('show');
 }
 
-function forceSubmit() {
-  document.getElementById('overlay-annulled').classList.remove('active');
-  document.getElementById('overlay-timeout').classList.remove('active');
-  submitQuiz(true);
+function dismissBanner() {
+  document.getElementById('bannerOverlay').classList.remove('show');
+  bannerActive = false;
+  if (violations >= 3) cancelQuiz();
 }
 
-// ==========================================
-// GENERATE DATA
-// ==========================================
-function randInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function cancelQuiz() {
+  if (finished) return;
+  quizActive = false;
+  finished = true;
+  clearInterval(timerInterval);
+  document.getElementById('devtoolsWarning').classList.remove('show');
+  document.getElementById('bannerOverlay').classList.remove('show');
+  document.getElementById('topBar').style.display = 'none';
+  showScreen('screenCancelled');
+
+  // Still send data with cancelled flag
+  sendResults(true);
 }
 
-function generateTask1() {
-  const nums = Array.from({length:20}, () => randInt(1, 99));
-  t1_numbers = nums;
-  const sorted = [...nums].sort((a,b) => a-b);
-
-  const mean = nums.reduce((s,n) => s+n, 0) / 20;
-  const median = (sorted[9] + sorted[10]) / 2;
-  const range = sorted[19] - sorted[0];
-
-  t1_correct = {
-    mean: Math.round(mean * 100) / 100,
-    median: Math.round(median * 100) / 100,
-    range
-  };
-
-  const grid = document.getElementById('task1-numbers');
-  grid.innerHTML = nums.map(n => `<div class="num-chip">${n}</div>`).join('');
-}
-
-function generateTask2() {
-  const nums = Array.from({length:20}, () => randInt(1, 60));
-  t2_numbers = nums;
-
-  // 6 intervals: 1-10, 11-20, 21-30, 31-40, 41-50, 51-60
-  const breaks = [1,11,21,31,41,51,61];
-  t2_intervals = breaks.slice(0,-1).map((b,i) => [b, breaks[i+1]-1]);
-  t2_correctDist = t2_intervals.map(([lo,hi]) => nums.filter(n => n>=lo && n<=hi).length);
-
-  const sorted = [...nums].sort((a,b) => a-b);
-  const mean = Math.round(nums.reduce((s,n) => s+n, 0) / 20 * 100) / 100;
-  const median = Math.round((sorted[9] + sorted[10]) / 2 * 100) / 100;
-  t2_correct = { mean, median };
-
-  // display numbers
-  document.getElementById('task2-numbers').innerHTML =
-    nums.map(n => `<div class="num-chip">${n}</div>`).join('');
-
-  // intervals info
-  document.getElementById('intervals-info').innerHTML =
-    t2_intervals.map(([lo,hi], i) =>
-      `<div class="interval-chip">И${i+1}: ${lo}–${hi} <span>(${t2_correctDist[i]})</span></div>`
-    ).join('');
-  // Note: showing correct counts for reference — in real exam hide them
-  // If you want to hide, remove <span> above
-
-  buildChart();
-}
-
-function buildChart() {
-  const container = document.getElementById('chart-container');
-  const slidersRow = document.getElementById('sliders-row');
-  container.innerHTML = '';
-  slidersRow.innerHTML = '';
-  sliderValues = [0,0,0,0,0,0];
-
-  const maxVal = 20;
-
-  t2_intervals.forEach(([lo,hi], i) => {
-    // Bar column
-    const wrap = document.createElement('div');
-    wrap.className = 'bar-wrapper';
-    wrap.innerHTML = `
-      <div class="bar-count" id="bc-${i}">0</div>
-      <div class="bar-track" id="bt-${i}">
-        <div class="bar-fill" id="bf-${i}" style="height:0%"></div>
-      </div>
-      <div class="bar-label">${lo}–${hi}</div>
-    `;
-    container.appendChild(wrap);
-
-    // Slider below
-    const sw = document.createElement('div');
-    sw.className = 'slider-wrap';
-    sw.style.flex = '1';
-    sw.innerHTML = `
-      <input type="range" class="bar-slider" id="sl-${i}"
-        min="0" max="${maxVal}" value="0"
-        oninput="updateBar(${i}, this.value)">
-      <div style="font-size:10px;color:var(--muted);">${lo}–${hi}</div>
-    `;
-    slidersRow.appendChild(sw);
-  });
-
-  updateDistInfo();
-}
-
-function updateBar(i, val) {
-  sliderValues[i] = parseInt(val);
-  document.getElementById('bc-'+i).textContent = val;
-  const pct = (val / 20 * 100);
-  document.getElementById('bf-'+i).style.height = pct + '%';
-  updateDistInfo();
-}
-
-function updateDistInfo() {
-  const total = sliderValues.reduce((s,v) => s+v, 0);
-  const info = document.getElementById('dist-score-info');
-  const color = total === 20 ? 'var(--accent3)' : total > 20 ? 'var(--accent2)' : 'var(--gold)';
-  info.innerHTML = `Сумма столбиков: <span style="color:${color};font-weight:700;font-family:'Unbounded',sans-serif;">${total}</span> / 20`;
-}
-
-// ==========================================
+// =====================
 // TIMER
-// ==========================================
+// =====================
 function startTimer() {
   timerInterval = setInterval(() => {
     secondsLeft--;
-    const m = Math.floor(secondsLeft / 60);
-    const s = secondsLeft % 60;
-    const el = document.getElementById('timer');
-    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    if (secondsLeft <= 60) el.classList.add('danger');
     if (secondsLeft <= 0) {
-      clearInterval(timerInterval);
-      document.getElementById('overlay-timeout').classList.add('active');
+      secondsLeft = 0;
+      updateTimerDisplay();
+      finishQuiz();
+      return;
     }
+    updateTimerDisplay();
   }, 1000);
 }
 
-// ==========================================
-// START
-// ==========================================
+function updateTimerDisplay() {
+  const m = Math.floor(secondsLeft / 60).toString().padStart(2,'0');
+  const s = (secondsLeft % 60).toString().padStart(2,'0');
+  document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+  const box = document.getElementById('timerBox');
+  box.classList.remove('warn','danger');
+  if (secondsLeft <= 60) box.classList.add('danger');
+  else if (secondsLeft <= 300) box.classList.add('warn');
+}
+
+// =====================
+// QUIZ FLOW
+// =====================
 function startQuiz() {
-  const last = document.getElementById('inp-last').value.trim();
-  const first = document.getElementById('inp-first').value.trim();
-  if (!last || !first) { alert('Введите фамилию и имя!'); return; }
-  studentName = `${last} ${first}`;
-  document.getElementById('student-name-display').textContent = studentName;
+  const surname = document.getElementById('inputSurname').value.trim();
+  const name = document.getElementById('inputName').value.trim();
+  if (!surname || !name) { alert('Пожалуйста, введи фамилию и имя.'); return; }
 
-  document.getElementById('screen-login').style.display = 'none';
-  document.getElementById('screen-quiz').style.display = 'block';
-  document.getElementById('main-header').style.display = 'flex';
+  studentName = surname + ' ' + name;
+  variant = Math.floor(Math.random() * 4); // hidden from student
+
+  document.getElementById('topBar').style.display = 'flex';
   quizActive = true;
+  currentTask = 0;
+  answers = ['', '', '', ''];
 
-  generateTask1();
-  generateTask2();
+  showScreen('screenTask');
+  renderTask();
   startTimer();
 }
 
-// ==========================================
-// SUBMIT
-// ==========================================
-function submitQuiz(forced = false) {
-  if (quizSubmitted) return;
-  quizSubmitted = true;
+function renderTask() {
+  document.getElementById('taskNum').textContent = `Задание ${currentTask + 1}`;
+  document.getElementById('answerInput').value = answers[currentTask] || '';
+  document.getElementById('navHint').textContent = `Задание ${currentTask + 1} из 4`;
+  document.getElementById('nextBtn').textContent = currentTask < 3 ? 'Следующее задание →' : '✓ Завершить работу';
+
+  // Dots
+  const dots = document.getElementById('dotsBar');
+  dots.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < currentTask ? ' done' : i === currentTask ? ' current' : '');
+    dots.appendChild(d);
+  }
+
+  // Image
+  const img = document.getElementById('taskImage');
+  const icon = document.getElementById('imgIcon');
+  const lbl = document.getElementById('imgLabel');
+  const imgSrc = `task${currentTask+1}_v${variant+1}.png`;
+
+  img.onload = () => {
+    img.style.display = 'block';
+    icon.style.display = 'none';
+    lbl.style.display = 'none';
+  };
+  img.onerror = () => {
+    img.style.display = 'none';
+    icon.style.display = '';
+    lbl.style.display = '';
+  };
+  img.src = imgSrc;
+}
+
+function normalizeAnswer(val) {
+  return val.trim().replace(',', '.');
+}
+
+function nextTask() {
+  answers[currentTask] = normalizeAnswer(document.getElementById('answerInput').value);
+  if (!answers[currentTask]) {
+    if (!confirm('Ты не ввёл ответ. Пропустить задание?')) return;
+  }
+  if (currentTask < 3) {
+    currentTask++;
+    renderTask();
+    document.getElementById('answerInput').focus();
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz() {
+  if (finished) return;
+  finished = true;
   quizActive = false;
   clearInterval(timerInterval);
+  document.getElementById('topBar').style.display = 'none';
 
-  const annulled = warnings >= 3;
+  document.getElementById('resultName').textContent = studentName;
+  showScreen('screenResult');
+  sendResults(false);
+}
 
-  // Score calc
-  const userMean   = parseFloat(document.getElementById('ans-mean').value);
-  const userMedian = parseFloat(document.getElementById('ans-median').value);
-  const userRange  = parseFloat(document.getElementById('ans-range').value);
-  const userMean2   = parseFloat(document.getElementById('ans-mean2').value);
-  const userMedian2 = parseFloat(document.getElementById('ans-median2').value);
-
-  const eps = 0.1;
-  let s1 = +(!isNaN(userMean)   && Math.abs(userMean   - t1_correct.mean)   < eps + 0.01);
-  let s2 = +(!isNaN(userMedian) && Math.abs(userMedian - t1_correct.median) < eps + 0.01);
-  let s3 = +(!isNaN(userRange)  && Math.abs(userRange  - t1_correct.range)  < 0.5);
-
-  // Histogram score: count correct bins (allow ±1)
-  const correctBins = sliderValues.filter((v,i) => Math.abs(v - t2_correctDist[i]) <= 1).length;
-  let s4 = correctBins >= 5 ? 1 : 0;  // at least 5/6 correct bins
-
-  let s5 = +(!isNaN(userMean2)   && Math.abs(userMean2   - t2_correct.mean)   < eps + 0.01);
-  let s6 = +(!isNaN(userMedian2) && Math.abs(userMedian2 - t2_correct.median) < eps + 0.01);
-
-  let total = s1+s2+s3+s4+s5+s6;
-
-  // Penalties
-  if (warnings >= 2) total = Math.max(0, total - 1);
-
-  let grade = '—';
-  if (!annulled) {
-    if (total >= 6) grade = '5';
-    else if (total === 5) grade = '4';
-    else if (total >= 3) grade = '3';
-    else grade = '2';
+function sendResults(cancelled) {
+  let score = 0;
+  for (let i = 0; i < 4; i++) {
+    const v = parseFloat(answers[i]);
+    if (!isNaN(v) && Math.abs(v - CORRECT_ANSWERS[i][variant]) < 0.001) score++;
   }
 
-  // Mark answers
-  markAnswer('row-mean',   s1);
-  markAnswer('row-median', s2);
-  markAnswer('row-range',  s3);
-  markAnswer('row-hist',   s4); // doesn't exist, skip
-  markAnswer('row-mean2',  s5);
-  markAnswer('row-median2',s6);
-
-  // Show result
-  document.getElementById('screen-quiz').style.display = 'none';
-  document.getElementById('screen-result').style.display = 'block';
-
-  if (annulled) {
-    document.getElementById('result-annulled').style.display = 'block';
-    document.getElementById('result-card').style.display = 'none';
-  } else {
-    document.getElementById('result-grade').textContent = grade;
-    document.getElementById('r-mean').textContent    = s1 ? '✅ 1/1' : `❌ 0/1 (верно: ${t1_correct.mean})`;
-    document.getElementById('r-median').textContent  = s2 ? '✅ 1/1' : `❌ 0/1 (верно: ${t1_correct.median})`;
-    document.getElementById('r-range').textContent   = s3 ? '✅ 1/1' : `❌ 0/1 (верно: ${t1_correct.range})`;
-    document.getElementById('r-hist').textContent    = s4 ? '✅ 1/1' : `❌ 0/1 (верно: ${t2_correctDist.join(',')})`;
-    document.getElementById('r-mean2').textContent   = s5 ? '✅ 1/1' : `❌ 0/1 (верно: ${t2_correct.mean})`;
-    document.getElementById('r-median2').textContent = s6 ? '✅ 1/1' : `❌ 0/1 (верно: ${t2_correct.median})`;
-    document.getElementById('r-total').textContent   = `${total} / 6`;
-    document.getElementById('r-warns').textContent   = warnings;
-    const notes = warnings >= 2 ? `Замечания: применён штраф −1 балл. ` : '';
-    document.getElementById('r-note').textContent = notes + `Правильные ответы: среднее=${t1_correct.mean}, медиана=${t1_correct.median}, размах=${t1_correct.range}`;
-  }
-
-  // Send to Google Sheets
-  sendResults({
+  const data = {
     name: studentName,
-    grade: annulled ? 'Аннулировано' : grade,
-    total: annulled ? 0 : total,
-    warnings,
-    t1_mean_user: userMean, t1_mean_correct: t1_correct.mean,
-    t1_median_user: userMedian, t1_median_correct: t1_correct.median,
-    t1_range_user: userRange, t1_range_correct: t1_correct.range,
-    t2_dist_user: sliderValues.join(','), t2_dist_correct: t2_correctDist.join(','),
-    t2_mean_user: userMean2, t2_mean_correct: t2_correct.mean,
-    t2_median_user: userMedian2, t2_median_correct: t2_correct.median,
-    annulled,
-    t1_numbers: t1_numbers.join(','),
-    t2_numbers: t2_numbers.join(','),
-    timestamp: new Date().toISOString()
-  });
+    variant: variant + 1,  // teacher sees it, student doesn't
+    answers: answers.join('; '),
+    score: score,
+    violations: violations,
+    cancelled: cancelled ? 'ДА' : 'нет',
+    time: new Date().toLocaleString('ru-RU')
+  };
+
+  const params = new URLSearchParams(data);
+  fetch(GOOGLE_SCRIPT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' }).catch(() => {});
 }
 
-function markAnswer(rowId, correct) {
-  const el = document.getElementById(rowId);
-  if (!el) return;
-  el.classList.add(correct ? 'correct' : 'wrong');
-  const inp = el.querySelector('.answer-input');
-  if (inp) inp.setAttribute('readonly', '');
+// =====================
+// SCREEN SWITCH
+// =====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-// ==========================================
-// SEND TO GOOGLE SHEETS
-// ==========================================
-async function sendResults(data) {
-  document.getElementById('sending-overlay').classList.add('active');
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-  } catch(e) {
-    console.error('Send failed:', e);
+// =====================
+// Disable view-source shortcut at document level
+// =====================
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) {
+    e.preventDefault();
   }
-  document.getElementById('sending-overlay').classList.remove('active');
-}
+}, true);
 </script>
-
-<!-- ==========================================
-GOOGLE APPS SCRIPT (paste in Apps Script editor):
-
-function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Результаты') 
-    || SpreadsheetApp.getActiveSpreadsheet().insertSheet('Результаты');
-
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow([
-      'Время', 'Ученик', 'Оценка', 'Баллов', 'Замечаний', 'Аннулировано',
-      'Ср.1(уч)', 'Ср.1(верн)', 'Мед.1(уч)', 'Мед.1(верн)', 'Разм(уч)', 'Разм(верн)',
-      'Гист(уч)', 'Гист(верн)', 'Ср.2(уч)', 'Ср.2(верн)', 'Мед.2(уч)', 'Мед.2(верн)',
-      'Числа задание1', 'Числа задание2'
-    ]);
-  }
-
-  sheet.appendRow([
-    data.timestamp, data.name, data.grade, data.total, data.warnings, data.annulled,
-    data.t1_mean_user, data.t1_mean_correct,
-    data.t1_median_user, data.t1_median_correct,
-    data.t1_range_user, data.t1_range_correct,
-    data.t2_dist_user, data.t2_dist_correct,
-    data.t2_mean_user, data.t2_mean_correct,
-    data.t2_median_user, data.t2_median_correct,
-    data.t1_numbers, data.t2_numbers
-  ]);
-
-  return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-=========================================== -->
-
 </body>
 </html>
